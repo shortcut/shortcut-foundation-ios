@@ -14,6 +14,8 @@ public protocol IDevice {
 }
 
 #if !os(macOS)
+import UIKit
+
 public struct Device: IDevice {
     public init() {}
 
