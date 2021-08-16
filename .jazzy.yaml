@@ -1,0 +1,19 @@
+# About
+module: ShortcutFoundation
+author: Shortcut
+author_url: https://shortcut.io
+readme: README.md
+copyright: '© All rights reserved 2021 Shortcut Scandinavia Apps AB'
+
+# URLs
+github_url: https://github.com/shortcut/shortcut-foundation-ios
+root_url: https://shortcut.io
+github_file_prefix: https://github.com/shortcut/shortcut-foundation-ios/blob/master
+
+# Generation
+clean: true
+output: Docs
+clean: true
+min_acl: public
+hide_documentation_coverage: false
+skip_undocumented: true

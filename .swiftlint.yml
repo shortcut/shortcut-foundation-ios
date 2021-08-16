@@ -1,0 +1,28 @@
+disabled_rules: # rule identifiers to exclude from running
+  - nesting
+  - type_name
+  - class_delegate_protocol
+  - function_parameter_count
+  - unused_setter_value
+
+excluded:
+  - Tests
+  - .build
+  - .swiftpm
+  - Package.swift
+
+colon:
+  apply_to_dictionaries: false
+  
+ 
+
+indentation: 2
+
+line_length: 150
+
+custom_rules:
+
+identifier_name:
+  min_length: 2
+    
+reporter: "json"
