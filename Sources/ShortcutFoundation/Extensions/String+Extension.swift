@@ -48,7 +48,7 @@ public extension String {
 
 // String + Date
 public extension String {
-    enum DateFormat {
+    public enum DateFormat {
         case day, month, year, dayAndMonth, monthAndYear
     }
     
