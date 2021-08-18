@@ -45,3 +45,31 @@ public extension String {
         return emailTest.evaluate(with: self)
     }
 }
+
+// String + Date
+public extension String {
+    enum DateFormat {
+        case day, month, year, dayAndMonth, monthAndYear
+    }
+    
+    static func getDateString(date: Date, format: DateFormat) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = formatString(format: format)
+        return formatter.string(from: date)
+    }
+    
+    private static func formatString(format: DateFormat) -> String {
+        switch format {
+        case .day:
+            return "dd"
+        case .month:
+            return "MMM"
+        case .year:
+            return "YYYY"
+        case .dayAndMonth:
+            return "dd MMM"
+        case .monthAndYear:
+            return "MMM YYYY"
+        }
+    }
+}
