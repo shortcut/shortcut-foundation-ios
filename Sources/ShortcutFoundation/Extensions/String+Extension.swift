@@ -47,11 +47,11 @@ public extension String {
 }
 
 // String + Date
+public enum DateFormat {
+    case day, month, year, dayAndMonth, monthAndYear, dayMonthAndYear
+}
+
 public extension String {
-    public enum DateFormat {
-        case day, month, year, dayAndMonth, monthAndYear
-    }
-    
     static func getDateString(date: Date, format: DateFormat) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = formatString(format: format)
@@ -70,6 +70,8 @@ public extension String {
             return "dd MMM"
         case .monthAndYear:
             return "MMM YYYY"
+        case .dayMonthAndYear:
+            return "dd MMM YYYY"
         }
     }
 }
