@@ -1,6 +1,6 @@
 import SwiftUI
 
-extension View {
+public extension View {
 
     func fullScreenBackground<Content: View>(_ view: Content, edgesIgnoringSafeArea: Edge.Set = .all) -> some View {
         return self.modifier(FullScreenBackgroundModifier(background: AnyView(view),
