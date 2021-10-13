@@ -25,8 +25,7 @@ public extension NetworkingClient {
 }
 
 // Data to JSON
-extension Publisher where Output == Data {
-
+extension AnyPublisher where Output == Data {
     public func toJSON() -> AnyPublisher<Any, Error> {
          tryMap { data -> Any in
             return try JSONSerialization.jsonObject(with: data, options: [])
