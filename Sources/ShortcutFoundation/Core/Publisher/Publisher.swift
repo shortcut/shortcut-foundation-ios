@@ -17,6 +17,10 @@ public final class Publisher<T>: NSObject, Combine {
         super.init()
         publisher = PassthroughSubject<T, PublisherError>()
     }
+    
+    deinit {
+        subscriptions.removeAll()
+    }
 }
 
 extension Publisher: Listener {
