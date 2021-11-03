@@ -48,7 +48,7 @@ public extension String {
 
 // String + Date
 public enum DateFormat {
-    case day, month, year, dayAndMonth, monthAndYear, dayMonthAndYear
+    case time, day, weekday, month, year, dayAndMonth, monthAndYear, dayMonthAndYear, weekdayDayMonthYear, weekdayDayMonthTime, dayMonthTime
 }
 
 public extension String {
@@ -60,10 +60,14 @@ public extension String {
     
     private static func formatString(format: DateFormat) -> String {
         switch format {
+        case .time:
+            return "h:mm a"
         case .day:
             return "dd"
+        case .weekday:
+            return "EEEE"
         case .month:
-            return "MMM"
+            return "MMMM"
         case .year:
             return "YYYY"
         case .dayAndMonth:
@@ -72,6 +76,12 @@ public extension String {
             return "MMM YYYY"
         case .dayMonthAndYear:
             return "dd MMM YYYY"
+        case .weekdayDayMonthYear:
+            return "EEEE, dd MMM, YYYY"
+        case .weekdayDayMonthTime:
+            return "EEEE, dd MMM, h:mm a"
+        case .dayMonthTime:
+            return "dd MMM, h:mm a"
         }
     }
 }
