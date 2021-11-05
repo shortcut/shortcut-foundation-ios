@@ -8,14 +8,14 @@
 
 import Foundation
 
-public protocol TaskFlow {
+public protocol SCTaskFlow {
     func finish()
     func finish<T>(_ result: T)
     func finish(_ error: Error)
     func cancel()
 }
 
-public enum TaskState<LastResult> {
+public enum SCTaskState<LastResult> {
     case queued
     case running(LastResult?)
     case canceled
@@ -23,8 +23,8 @@ public enum TaskState<LastResult> {
     case finished(LastResult?)
 }
 
-public final class Task {
-    public typealias Callback = (TaskFlow, Any?) -> Void
+public final class SCTask {
+    public typealias Callback = (SCTaskFlow, Any?) -> Void
     fileprivate let callback: Callback
     fileprivate let runOnBackground: Bool
     
@@ -33,7 +33,7 @@ public final class Task {
         callback = closure
     }
     
-    public func run(flow: TaskFlow, previousResult result: Any?) {
+    public func run(flow: SCTaskFlow, previousResult result: Any?) {
         guard runOnBackground else { callback(flow, result); return }
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
