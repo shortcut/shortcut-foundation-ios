@@ -8,13 +8,13 @@ final class TaskFlowTests: XCTestCase {
     }
     
     func test_execute_and_complete_a_task() {
-        let task = Task { flow, _ in
+        let task = SCTask { flow, _ in
             flow.finish()
         }
         
         let exp = expectation(description: "Wait for task completion")
         
-        let sequence = TaskSequence(tasks: task)
+        let sequence = SCTaskSequence(tasks: task)
         sequence.whenDone { state in
             switch state {
             case .finished:
@@ -30,13 +30,13 @@ final class TaskFlowTests: XCTestCase {
     }
     
     func test_execute_and_cancel_a_task() {
-        let task = Task { flow, _ in
+        let task = SCTask { flow, _ in
             flow.cancel()
         }
         
         let exp = expectation(description: "Wait for task completion")
         
-        let sequence = TaskSequence(tasks: task)
+        let sequence = SCTaskSequence(tasks: task)
         sequence.whenDone { state in
             switch state {
             case .canceled:
@@ -52,13 +52,13 @@ final class TaskFlowTests: XCTestCase {
     }
     
     func test_execute_and_finish_a_task_with_an_error() {
-        let task = Task { flow, _ in
+        let task = SCTask { flow, _ in
             flow.finish(TestTaskError.genericError)
         }
         
         let exp = expectation(description: "Wait for task completion")
         
-        let sequence = TaskSequence(tasks: task)
+        let sequence = SCTaskSequence(tasks: task)
         sequence.whenDone { state in
             switch state {
             case .failed(let error):
@@ -80,13 +80,13 @@ final class TaskFlowTests: XCTestCase {
     func test_execute_and_complete_a_task_passing_a_result() {
         let expectedResult = 2112
         
-        let task = Task { flow, _ in
+        let task = SCTask { flow, _ in
             flow.finish(expectedResult)
         }
         
         let exp = expectation(description: "Wait for task completion")
         
-        let sequence = TaskSequence(tasks: task)
+        let sequence = SCTaskSequence(tasks: task)
         sequence.whenDone { state in
             switch state {
             case .finished(let result):
@@ -112,11 +112,11 @@ final class TaskFlowTests: XCTestCase {
         let initialResult = 2
         let secondResult = 2
         
-        let firstTask = Task { flow, _ in
+        let firstTask = SCTask { flow, _ in
             flow.finish(initialResult)
         }
         
-        let secondTask = Task { flow, previousResult in
+        let secondTask = SCTask { flow, previousResult in
             guard let previousResult = previousResult as? Int else {
                 flow.finish(TestTaskError.expectedIntegerPreviousResult)
                 return
@@ -126,7 +126,7 @@ final class TaskFlowTests: XCTestCase {
         
         let exp = expectation(description: "Wait for task completion")
         
-        let sequence = TaskSequence(tasks: firstTask, secondTask)
+        let sequence = SCTaskSequence(tasks: firstTask, secondTask)
         sequence.whenDone { state in
             switch state {
             case .finished(let result):

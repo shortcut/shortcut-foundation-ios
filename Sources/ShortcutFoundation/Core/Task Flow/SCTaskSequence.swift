@@ -8,10 +8,10 @@
 
 import Foundation
 
-public final class TaskSequence {
-    fileprivate var tasks: [Task]
+public final class SCTaskSequence {
+    fileprivate var tasks: [SCTask]
     
-    public typealias FinishCallback = (TaskState<Any>?) -> Void
+    public typealias FinishCallback = (SCTaskState<Any>?) -> Void
     public typealias ErrorCallback = (Error) -> Void
     public typealias CancelCallback = () -> Void
     
@@ -19,23 +19,23 @@ public final class TaskSequence {
     fileprivate var errorCallback: ErrorCallback?
     fileprivate var cancelCallback: CancelCallback?
     
-    fileprivate var currentState: TaskState<Any>? = .queued
+    fileprivate var currentState: SCTaskState<Any>? = .queued
     fileprivate let syncQueue = DispatchQueue(label: "io.shortcut.syncQueue",
                                               attributes: DispatchQueue.Attributes.concurrent)
     
-    public var state: TaskState<Any>? {
-        var val: TaskState<Any>?
+    public var state: SCTaskState<Any>? {
+        var val: SCTaskState<Any>?
         syncQueue.sync {
             val = self.currentState
         }
         return val
     }
     
-    public init(tasks: [Task]) {
+    public init(tasks: [SCTask]) {
         self.tasks = tasks
     }
     
-    public init(tasks: Task...) {
+    public init(tasks: SCTask...) {
         self.tasks = tasks
     }
     
@@ -76,7 +76,7 @@ public final class TaskSequence {
     deinit {}
 }
 
-extension TaskSequence: TaskFlow {
+extension SCTaskSequence: SCTaskFlow {
     public func finish() {
         guard case .running = state else {
             return
@@ -92,7 +92,7 @@ extension TaskSequence: TaskFlow {
             return
         }
         
-        var task: Task?
+        var task: SCTask?
         syncQueue.sync(flags: .barrier) {
             self.currentState = .running(nil)
             task = self.tasks.first
@@ -116,7 +116,7 @@ extension TaskSequence: TaskFlow {
             return
         }
         
-        var task: Task?
+        var task: SCTask?
         syncQueue.sync(flags: .barrier) {
             self.currentState = .running(result)
             task = self.tasks.first
