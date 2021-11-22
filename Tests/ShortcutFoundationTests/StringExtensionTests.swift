@@ -39,7 +39,7 @@ final class StringExtensionTests: XCTestCase {
     }
     
     func test_month() {
-        let expectedMonth = "Aug"
+        let expectedMonth = "August"
         let month = String.getDateString(date: .nineteenthAugust2021, format: .month)
         XCTAssertEqual(month, expectedMonth)
     }
