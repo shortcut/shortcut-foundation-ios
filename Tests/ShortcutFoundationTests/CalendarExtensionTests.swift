@@ -39,7 +39,6 @@ final class CalendarExtensionTests: XCTestCase {
         let expectedResult = 27
         let lastDay = calendar.lastDayOfWeek(for: dayInWeek!)
         let result = calendar.component(.day, from: lastDay!)
-        print(result)
         XCTAssert(result == expectedResult)
     }
     
@@ -53,7 +52,6 @@ final class CalendarExtensionTests: XCTestCase {
         let expectedResult = 26
         let lastDay = calendar.lastDayOfWeek(for: dayInWeek!)
         let result = calendar.component(.day, from: lastDay!)
-        print(result)
         XCTAssert(result != expectedResult)
     }
     
