@@ -35,7 +35,33 @@ public extension Calendar {
     }
     
     func yearForWeekOfYear(from date: Date) -> Int {
-        return Calendar.current.component(.yearForWeekOfYear, from: date)
+        return self.component(.yearForWeekOfYear, from: date)
+    }
+    
+    func isFutureWeek(date: Date) -> Bool {
+        let week = week(from: date)
+        let year = yearForWeekOfYear(from: date)
+        
+        if year > self.currentYearForWeekOfYear() {
+            return true
+        } else if year == self.currentYearForWeekOfYear() && week > currentWeek() {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func isPastWeek(date: Date) -> Bool {
+        let week = week(from: date)
+        let year = yearForWeekOfYear(from: date)
+        
+        if year < self.currentYearForWeekOfYear() {
+            return true
+        } else if year == self.currentYearForWeekOfYear() && week < currentWeek() {
+            return true
+        } else {
+            return false
+        }
     }
     
 }
