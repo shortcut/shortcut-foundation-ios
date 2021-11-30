@@ -46,9 +46,8 @@ public extension Calendar {
             return true
         } else if year == self.currentYearForWeekOfYear() && week > currentWeek() {
             return true
-        } else {
-            return false
         }
+        return false
     }
     
     func isPastWeek(date: Date) -> Bool {
@@ -59,9 +58,8 @@ public extension Calendar {
             return true
         } else if year == self.currentYearForWeekOfYear() && week < currentWeek() {
             return true
-        } else {
-            return false
         }
+        return false
     }
     
 }
