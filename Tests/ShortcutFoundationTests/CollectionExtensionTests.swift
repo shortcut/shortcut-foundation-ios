@@ -10,7 +10,7 @@ import XCTest
 
 final class CollectionExtensionTests: XCTestCase {
     
-    func testSafeArrayIndexingSuccess() {
+    func test_safe_array_indexing_success() {
         let array = [1, 2, 3, 4]
         let indexOfNumberTwo = 1
         guard let numberTwo = array[safe: indexOfNumberTwo] else {
@@ -20,7 +20,7 @@ final class CollectionExtensionTests: XCTestCase {
         XCTAssert(numberTwo == array[indexOfNumberTwo])
     }
     
-    func testSafeArrayIndexingFailure() {
+    func test_safe_array_indexing_failure() {
         let array = [1, 2, 3, 4]
         let indexOutOfRange = 5
         guard let _ = array[safe: indexOutOfRange] else { return }
