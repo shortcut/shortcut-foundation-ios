@@ -1,15 +1,21 @@
 import SwiftUI
 import WebKit
+import UIKit
 
-struct WKWebViewRepresentable: UIViewRepresentable {
-
+public struct WKWebViewRepresentable: UIViewRepresentable {
+    public typealias Context = UIViewRepresentableContext<Self>
+    
     let url: URL
-
-    func makeUIView(context: Context) -> WKWebView {
+    
+    public init(url: URL) {
+        self.url = url
+    }
+    
+    public func makeUIView(context: Context) -> WKWebView {
         return WKWebView()
     }
-
-    func updateUIView(_ uiView: WKWebView, context: Context) {
+    
+    public func updateUIView(_ uiView: WKWebView, context: Context) {
         uiView.load(URLRequest(url: url))
     }
 }
