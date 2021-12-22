@@ -5,6 +5,8 @@ public extension Date {
     var isPast: Bool { !isFuture }
 
     var isToday: Bool { Calendar.current.isDateInToday(self) }
+    var wasYesterday: Bool { Calendar.current.isDateInYesterday(self) }
+    var isTomorrow: Bool { Calendar.current.isDateInTomorrow(self) }
     var isThisHour: Bool { Calendar.current.isDate(self, equalTo: Date(), toGranularity: .hour) }
     var isFutureDay: Bool { isFuture && !isToday }
     var isPastDay: Bool { isPast && !isToday }
@@ -79,5 +81,29 @@ public extension Date {
         guard let ellapsedTime = Calendar.current.dateComponents([.day], from: self, to: currentTime).day else { return false }
 
         return ellapsedTime > days
+    }
+    
+    func isEqual(to date: Date, toGranularity component: Calendar.Component, in calendar: Calendar = .current) -> Bool {
+        calendar.isDate(self, equalTo: date, toGranularity: component)
+    }
+    
+    func isInSameMonth() -> Bool { isEqual(to: self, toGranularity: .month) }
+    func isInLastMonth() -> Bool {
+        guard let nextMonth = Calendar.current.date(byAdding: DateComponents(month: -1), to: Date()) else {
+            return false
+        }
+        return Calendar.current.isDate(self, equalTo: nextMonth, toGranularity: .month)
+    }
+    
+    func isInCurrentOrLastMonth() -> Bool {
+        self.isInSameMonth() || self.isInLastMonth()
+    }
+    
+    func startDateOfMonth() -> Date {
+        Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Calendar.current.startOfDay(for: self)))!
+    }
+    
+    func endDateOfMonth() -> Date {
+        Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startDateOfMonth())!
     }
 }
