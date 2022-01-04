@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import os
 
 /**
  Verbosity Desired level to determine the output of the logger
@@ -45,6 +44,14 @@ public protocol Loggable {
     /// @abstract The desired verbosity
     var verbosity: Verbosity { get set }
 
+    /// Init Method that creates a custom logger for logging to a specific identifier and category.
+    /// - Author: Gabriel Sabadin
+    ///
+    /// - Parameter verbosity: The desired Verbosity
+    /// - Parameter identifier: A String to determine the identifier of the logger
+    /// - Parameter category: A String to determine the category of the logger
+    init(verbosity: Verbosity, identifier: String, category: String)
+
     /// Method that triggers the logging procedure
     /// - Author: Gabriel Sabadin
     ///
@@ -52,18 +59,44 @@ public protocol Loggable {
     func log(message: String)
 }
 
-public struct Logger: Loggable {
-    private let logger: os.Logger
-    public var verbosity: Verbosity
+struct PrintLogger: Loggable {
+    var verbosity: Verbosity
 
-    public init(verbosity: Verbosity = .silent,
-                identifier: String = "",
-                category: String = "") {
+    init(verbosity: Verbosity, identifier: String, category: String) {
+        self.verbosity = verbosity
+    }
+
+    func log(message: String) {
+        switch verbosity {
+        case .debug:
+            print("🕵️‍♀️ DEBUG: \(message)")
+        case .info:
+            print("ℹ️ INFO: \(message)")
+        case .warning:
+            print("⚠️ WARNING: \(message)")
+        case .error:
+            print("⛔️ ERROR: \(message)")
+        case .critical:
+            print("☣️ CRITICAL: \(message)")
+        case .silent:
+            // no log message message
+            break
+        }
+    }
+}
+
+import os
+@available(iOS 14.0, *)
+struct AppleLogger: Loggable {
+    private let logger: os.Logger
+    var verbosity: Verbosity
+
+    init(verbosity: Verbosity, identifier: String, category: String) {
         self.verbosity = verbosity
         logger = os.Logger(subsystem: identifier, category: category)
     }
 
-    public func log(message: String) {
+    func log(message: String) {
         switch verbosity {
         case .debug:
             logger.debug("\(message)")
@@ -79,5 +112,34 @@ public struct Logger: Loggable {
             // no log message message
             break
         }
+    }
+}
+
+public struct Logger: Loggable {
+    private var strategy: Loggable
+
+    public var verbosity: Verbosity = .silent {
+        didSet {
+            strategy.verbosity = verbosity
+        }
+    }
+
+    public init(verbosity: Verbosity = .silent,
+                identifier: String = "",
+                category: String = "") {
+        if #available(iOS 14.0, *) {
+            strategy = AppleLogger(verbosity: verbosity, identifier: identifier, category: category)
+        } else {
+            strategy = PrintLogger(verbosity: verbosity, identifier: identifier, category: category)
+        }
+    }
+
+    private func makeStrategy(identifier: String = "",
+                              category: String = "") -> Loggable {
+        return PrintLogger(verbosity: verbosity, identifier: identifier, category: category)
+    }
+
+    public func log(message: String) {
+        strategy.log(message: message)
     }
 }
