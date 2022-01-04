@@ -8,7 +8,7 @@ public extension Date {
     var isThisHour: Bool { Calendar.current.isDate(self, equalTo: Date(), toGranularity: .hour) }
     var isFutureDay: Bool { isFuture && !isToday }
     var isPastDay: Bool { isPast && !isToday }
-    
+
     static var now: Date {
         return Date()
     }

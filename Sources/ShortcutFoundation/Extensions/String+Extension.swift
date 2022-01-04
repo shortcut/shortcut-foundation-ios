@@ -48,7 +48,10 @@ public extension String {
 
 // String + Date
 public enum DateFormat {
-    case time, day, weekday, month, shortMonth, year, dayAndMonth, monthAndYear, dayMonthAndYear, weekdayDayMonthYear, weekdayDayMonthTime, dayMonthTime
+    case time, day, weekday, month,
+         shortMonth, year, dayAndMonth,
+         monthAndYear, dayMonthAndYear, weekdayDayMonthYear,
+         weekdayDayMonthTime, dayMonthTime
 }
 
 public extension String {
@@ -57,7 +60,8 @@ public extension String {
         formatter.dateFormat = formatString(format: format)
         return formatter.string(from: date)
     }
-    
+
+    // swiftlint:disable cyclomatic_complexity
     private static func formatString(format: DateFormat) -> String {
         switch format {
         case .time:

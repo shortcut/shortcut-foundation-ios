@@ -20,7 +20,7 @@ public extension Array where Element: Hashable {
         let otherSet = Set(other)
         return Array(thisSet.symmetricDifference(otherSet))
     }
-    
+
     @inlinable func elementsEqual(_ other: [Element],
                                   ignoreOrder: Bool) -> Bool {
         if ignoreOrder {

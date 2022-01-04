@@ -10,19 +10,19 @@ import Foundation
 
 public final class SCTaskSequence {
     fileprivate var tasks: [SCTask]
-    
+
     public typealias FinishCallback = (SCTaskState<Any>?) -> Void
     public typealias ErrorCallback = (Error) -> Void
     public typealias CancelCallback = () -> Void
-    
+
     fileprivate var finishCallback: FinishCallback = { _ in }
     fileprivate var errorCallback: ErrorCallback?
     fileprivate var cancelCallback: CancelCallback?
-    
+
     fileprivate var currentState: SCTaskState<Any>? = .queued
     fileprivate let syncQueue = DispatchQueue(label: "io.shortcut.syncQueue",
                                               attributes: DispatchQueue.Attributes.concurrent)
-    
+
     public var state: SCTaskState<Any>? {
         var val: SCTaskState<Any>?
         syncQueue.sync {
@@ -30,41 +30,41 @@ public final class SCTaskSequence {
         }
         return val
     }
-    
+
     public init(tasks: [SCTask]) {
         self.tasks = tasks
     }
-    
+
     public init(tasks: SCTask...) {
         self.tasks = tasks
     }
-    
+
     public func whenDone(_ callback: @escaping FinishCallback) {
         guard case .queued = state else { assertionFailure("Cannot modify a task after starting") ; return }
         finishCallback = callback
     }
-    
+
     public func onFinish(_ callback: @escaping FinishCallback) -> Self {
         guard case .queued = state else { assertionFailure("Cannot modify a task after starting") ; return self }
         finishCallback = callback
         return self
     }
-    
+
     public func onError(_ callback: @escaping ErrorCallback) -> Self {
         guard case .queued = state else { assertionFailure("Cannot modify a task after starting") ; return self }
         errorCallback = callback
         return self
     }
-    
+
     public func onCancel(_ callback: @escaping CancelCallback) -> Self {
         guard case .queued = state else { assertionFailure("Cannot modify a task after starting") ; return self }
         cancelCallback = callback
         return self
     }
-    
+
     public func start() {
         guard case .queued = state else { assertionFailure("Cannot start a task twice") ; return }
-        
+
         if !tasks.isEmpty {
             currentState = .running(Void.self)
             let task = tasks.first
@@ -72,7 +72,7 @@ public final class SCTaskSequence {
             task?.run(flow: self, previousResult: nil)
         }
     }
-    
+
     deinit {}
 }
 
@@ -81,7 +81,7 @@ extension SCTaskSequence: SCTaskFlow {
         guard case .running = state else {
             return
         }
-        
+
         guard !tasks.isEmpty else {
             syncQueue.sync(flags: .barrier) {
                 self.currentState = .finished(nil)
@@ -91,7 +91,7 @@ extension SCTaskSequence: SCTaskFlow {
             }
             return
         }
-        
+
         var task: SCTask?
         syncQueue.sync(flags: .barrier) {
             self.currentState = .running(nil)
@@ -100,12 +100,12 @@ extension SCTaskSequence: SCTaskFlow {
         }
         task?.run(flow: self, previousResult: nil)
     }
-    
+
     public func finish<T>(_ result: T) {
         guard case .running = state else {
             return
         }
-        
+
         guard !tasks.isEmpty else {
             syncQueue.sync(flags: .barrier) {
                 self.currentState = .finished(result)
@@ -115,7 +115,7 @@ extension SCTaskSequence: SCTaskFlow {
             }
             return
         }
-        
+
         var task: SCTask?
         syncQueue.sync(flags: .barrier) {
             self.currentState = .running(result)
@@ -124,13 +124,13 @@ extension SCTaskSequence: SCTaskFlow {
         }
         task?.run(flow: self, previousResult: result)
     }
-    
+
     public func finish(_ error: Error) {
         syncQueue.sync(flags: .barrier) {
             self.tasks.removeAll()
             self.currentState = .failed(error)
         }
-        
+
         DispatchQueue.main.async {
             guard let errorCallback = self.errorCallback else {
                 self.finishCallback(self.state)
@@ -140,7 +140,7 @@ extension SCTaskSequence: SCTaskFlow {
             self.errorCallback = nil
         }
     }
-    
+
     public func cancel() {
         syncQueue.sync(flags: .barrier) {
             self.tasks.removeAll()

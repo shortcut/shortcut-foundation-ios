@@ -27,15 +27,15 @@ public final class SCTask {
     public typealias Callback = (SCTaskFlow, Any?) -> Void
     fileprivate let callback: Callback
     fileprivate let runOnBackground: Bool
-    
+
     public init(onBackground: Bool = false, closure: @escaping Callback) {
         runOnBackground = onBackground
         callback = closure
     }
-    
+
     public func run(flow: SCTaskFlow, previousResult result: Any?) {
         guard runOnBackground else { callback(flow, result); return }
-        
+
         DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
             self.callback(flow, result)
         }

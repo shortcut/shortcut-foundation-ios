@@ -10,18 +10,18 @@ import Foundation
 
 struct EventMap {
     var storage = [String: [Function]]()
-    
+
     func hasListener(forKey key: String) -> Bool {
         guard let event = self[key], event.count > 0 else {
             return false
         }
         return true
     }
-    
+
     mutating func remove(forKey key: String) {
         storage.removeValue(forKey: key)
     }
-    
+
     subscript(_ key: String) -> [Function]? {
         get {
             return storage[key]

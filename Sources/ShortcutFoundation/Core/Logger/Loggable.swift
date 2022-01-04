@@ -24,19 +24,19 @@ import os
 public enum Verbosity {
     /// used for debug purposes
     case debug
-    
+
     /// used to add relevant information
     case info
-    
+
     /// used to indicate warnings and provide guidance
     case warning
-    
+
     /// used to indicate errors and provide ways to troubleshoot
     case error
-    
+
     /// used to indicate critical errors
     case critical
-    
+
     /// used to silent the logger (nothing will be printed out)
     case silent
 }
@@ -44,7 +44,7 @@ public enum Verbosity {
 public protocol Loggable {
     /// @abstract The desired verbosity
     var verbosity: Verbosity { get set }
-    
+
     /// Method that triggers the logging procedure
     /// - Author: Gabriel Sabadin
     ///
@@ -62,7 +62,7 @@ public struct Logger: Loggable {
         self.verbosity = verbosity
         logger = os.Logger(subsystem: identifier, category: category)
     }
-    
+
     public func log(message: String) {
         switch verbosity {
         case .debug:
