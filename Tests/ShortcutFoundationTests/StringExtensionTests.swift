@@ -13,8 +13,8 @@ final class StringExtensionTests: XCTestCase {
     func test_negative_futute_age_from_personal_number() {
         let sut = "198512230000"
         let age = sut.ageFromPersonalNumber
-        // in December 2021
-        let expectedAge = 35
+        // in December 2022
+        let expectedAge = 36
         XCTAssertEqual(age, expectedAge)
     }
     
@@ -39,8 +39,14 @@ final class StringExtensionTests: XCTestCase {
     }
     
     func test_month() {
-        let expectedMonth = "Aug"
+        let expectedMonth = "August"
         let month = String.getDateString(date: .nineteenthAugust2021, format: .month)
+        XCTAssertEqual(month, expectedMonth)
+    }
+    
+    func test_short_month() {
+        let expectedMonth = "Aug"
+        let month = String.getDateString(date: .nineteenthAugust2021, format: .shortMonth)
         XCTAssertEqual(month, expectedMonth)
     }
     

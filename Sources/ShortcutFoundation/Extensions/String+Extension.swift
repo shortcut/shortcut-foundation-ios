@@ -48,7 +48,7 @@ public extension String {
 
 // String + Date
 public enum DateFormat {
-    case time, day, weekday, month, year, dayAndMonth, monthAndYear, dayMonthAndYear, weekdayDayMonthYear, weekdayDayMonthTime, dayMonthTime
+    case time, day, weekday, month, shortMonth, year, dayAndMonth, monthAndYear, dayMonthAndYear, weekdayDayMonthYear, weekdayDayMonthTime, dayMonthTime
 }
 
 public extension String {
@@ -66,6 +66,8 @@ public extension String {
             return "dd"
         case .weekday:
             return "EEEE"
+        case .shortMonth:
+            return "MMM"
         case .month:
             return "MMMM"
         case .year:
