@@ -134,11 +134,6 @@ public struct Logger: Loggable {
         }
     }
 
-    private func makeStrategy(identifier: String = "",
-                              category: String = "") -> Loggable {
-        return PrintLogger(verbosity: verbosity, identifier: identifier, category: category)
-    }
-
     public func log(message: String) {
         strategy.log(message: message)
     }
