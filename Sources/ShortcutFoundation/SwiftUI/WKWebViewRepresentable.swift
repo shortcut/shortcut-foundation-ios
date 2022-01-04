@@ -1,5 +1,8 @@
 import SwiftUI
 import WebKit
+
+#if canImport(UIKit)
+
 import UIKit
 
 public struct WKWebViewRepresentable: UIViewRepresentable {
@@ -25,3 +28,6 @@ struct Web_Previews: PreviewProvider {
         WKWebViewRepresentable(url: URL(string: "www.google.com")!)
     }
 }
+
+#endif
+
