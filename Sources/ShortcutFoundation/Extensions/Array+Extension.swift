@@ -13,3 +13,20 @@ public extension Array where Element: Identifiable {
         self.removeAll { $0.id == id }
     }
 }
+
+public extension Array where Element: Hashable {
+    @inlinable func difference(_ other: [Element]) -> [Element] {
+        let thisSet = Set(self)
+        let otherSet = Set(other)
+        return Array(thisSet.symmetricDifference(otherSet))
+    }
+    
+    @inlinable func elementsEqual(_ other: [Element],
+                                  ignoreOrder: Bool) -> Bool {
+        if ignoreOrder {
+            return self.difference(other).isEmpty
+        } else {
+            return self.elementsEqual(other)
+        }
+    }
+}
