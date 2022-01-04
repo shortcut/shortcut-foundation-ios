@@ -27,7 +27,6 @@ public extension NetworkingClient {
         let req = NetworkingRequest()
         req.baseURL = baseURL
         req.cachePolicy = cachePolicy
-        req.logLevels = logLevels
         req.headers = headers
         req.httpVerb = httpVerb
         req.route = route

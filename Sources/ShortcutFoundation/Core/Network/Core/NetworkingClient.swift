@@ -28,11 +28,6 @@ public struct NetworkingClient {
 
     public var encoder: JSONEncoder = JSONEncoder()
 
-    public var logLevels: NetworkingLogLevel {
-        get { return logger.logLevels }
-        set { logger.logLevels = newValue }
-    }
-
     private let logger = NetworkingLogger()
 
     public init(baseURL: String, timeout: TimeInterval? = nil) {
