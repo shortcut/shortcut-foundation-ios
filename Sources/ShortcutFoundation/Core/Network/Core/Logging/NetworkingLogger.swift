@@ -2,7 +2,7 @@ import Foundation
 
 final class NetworkingLogger {
     @LazyInject private var logger: Loggable
-    
+
     func log(request: URLRequest) {
         if let verb = request.httpMethod,
             let url = request.url {
@@ -16,7 +16,7 @@ final class NetworkingLogger {
         if let response = response as? HTTPURLResponse {
             logStatusCodeAndURL(response)
         }
-        
+
         logger.log(message: String(decoding: data, as: UTF8.self))
     }
 

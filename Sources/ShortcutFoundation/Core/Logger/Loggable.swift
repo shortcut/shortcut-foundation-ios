@@ -57,6 +57,13 @@ public protocol Loggable {
     ///
     /// - Parameter message: A String to determine the message you want to be logged
     func log(message: String)
+
+    /// Method that triggers the logging procedure
+    /// - Author: Gabriel Sabadin
+    ///
+    /// - Parameter message: A String to determine the message you want to be logged
+    /// - Parameter message: A verbosity argument to have the flexibility to use different verbosity
+    func log(message: String, verbosity: Verbosity)
 }
 
 struct PrintLogger: Loggable {
@@ -67,6 +74,10 @@ struct PrintLogger: Loggable {
     }
 
     func log(message: String) {
+        log(message: message, verbosity: verbosity)
+    }
+
+    func log(message: String, verbosity: Verbosity) {
         switch verbosity {
         case .debug:
             print("🕵️‍♀️ DEBUG: \(message)")
@@ -97,6 +108,10 @@ struct AppleLogger: Loggable {
     }
 
     func log(message: String) {
+        log(message: message, verbosity: verbosity)
+    }
+
+    func log(message: String, verbosity: Verbosity) {
         switch verbosity {
         case .debug:
             logger.debug("\(message)")
@@ -136,5 +151,9 @@ public struct Logger: Loggable {
 
     public func log(message: String) {
         strategy.log(message: message)
+    }
+
+    public func log(message: String, verbosity: Verbosity) {
+        strategy.log(message: message, verbosity: verbosity)
     }
 }
