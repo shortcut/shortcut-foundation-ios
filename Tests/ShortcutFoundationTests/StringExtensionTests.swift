@@ -15,7 +15,6 @@ final class StringExtensionTests: XCTestCase {
         let expectedAge = Calendar.current.dateComponents([.year], from: dateOfBirth, to: .now).year
         let sut = "198512230000"
         let age = sut.ageFromPersonalNumber
-        // in December 2022
         XCTAssertEqual(age, expectedAge)
     }
     
