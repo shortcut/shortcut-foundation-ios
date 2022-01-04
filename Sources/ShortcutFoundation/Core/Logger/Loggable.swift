@@ -1,9 +1,9 @@
 //
-// Loggable.swift
-// VSFoundation
+//  Loggable.swift
+//  ShortcutFoundation
 //
-// Created by Gabriel Sabadin on 2021-12-13.
-// Copyright Virtual Stores - 2021
+//  Created by Gabriel Sabadin on 2021-12-13.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
 import Foundation
