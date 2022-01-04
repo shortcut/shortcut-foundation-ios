@@ -1,3 +1,11 @@
+//
+//  Sequence+IndexedArray.swift
+//  ShortcutFoundation
+//
+//  Created by Gabriel Sabadin on 2021-08-16.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
+//
+
 import Foundation
 
 // Use this to get an indexed array that is usable in a SwiftUI ForEach loop

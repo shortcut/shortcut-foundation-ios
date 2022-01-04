@@ -1,9 +1,23 @@
+//
+//  NetworkingLogger.swift
+//  ShortcutFoundation
+//
+//  Created by Gabriel Sabadin, Karl Söderberg on 2021-08-16.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
+//
+
 import Foundation
 
 final class NetworkingLogger {
     @LazyInject private var logger: Loggable
 
     func log(request: URLRequest) {
+        // utilizing the global defined verbosity
+        logger.log(message: "some message")
+
+        // utilizing a defined verbosity for this particular log
+        logger.log(message: "some critical message", verbosity: .critical)
+
         if let verb = request.httpMethod,
             let url = request.url {
             logger.log(message: "\(verb) '\(url.absoluteString)'")

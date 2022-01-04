@@ -1,9 +1,8 @@
 disabled_rules: # rule identifiers to exclude from running
-  - nesting
   - type_name
-  - class_delegate_protocol
-  - function_parameter_count
-  - unused_setter_value
+
+opt_in_rules:
+  - file_header
 
 excluded:
   - Tests
@@ -14,8 +13,16 @@ excluded:
 colon:
   apply_to_dictionaries: false
   
- 
-
+file_header:
+  required_pattern: |
+                    \/\/
+                    \/\/  .*?\.swift
+                    \/\/  ShortcutFoundation
+                    \/\/
+                    \/\/  Created by .*? on \d{4}\-\d{1,2}\-\d{1,2}\.
+                    \/\/  Copyright © \d{4} Shortcut Scandinavia Apps AB\. All rights reserved\.
+                    \/\/
+                    
 indentation: 2
 
 line_length: 150

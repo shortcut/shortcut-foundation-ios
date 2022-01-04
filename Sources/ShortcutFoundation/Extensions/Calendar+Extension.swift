@@ -3,12 +3,12 @@
 //  ShortcutFoundation
 //
 //  Created by Andreas Lif on 2021-11-24.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
 import Foundation
 
 public extension Calendar {
-
     func firstDayOf(week: Int, year: Int) -> Date? {
         let components = DateComponents(weekOfYear: week, yearForWeekOfYear: year)
         let firstDay = self.date(from: components)
