@@ -11,12 +11,10 @@ final class StringExtensionTests: XCTestCase {
     }
     
     func test_negative_futute_age_from_personal_number() {
-
         let dateOfBirth = Calendar.current.date(from: .init(year: 1985, month: 12, day: 23))!
         let expectedAge = Calendar.current.dateComponents([.year], from: dateOfBirth, to: .now).year
         let sut = "198512230000"
         let age = sut.ageFromPersonalNumber
-
         XCTAssertEqual(age, expectedAge)
     }
     
@@ -43,6 +41,12 @@ final class StringExtensionTests: XCTestCase {
     func test_month() {
         let expectedMonth = "August"
         let month = String.getDateString(date: .nineteenthAugust2021, format: .month)
+        XCTAssertEqual(month, expectedMonth)
+    }
+    
+    func test_short_month() {
+        let expectedMonth = "Aug"
+        let month = String.getDateString(date: .nineteenthAugust2021, format: .shortMonth)
         XCTAssertEqual(month, expectedMonth)
     }
     

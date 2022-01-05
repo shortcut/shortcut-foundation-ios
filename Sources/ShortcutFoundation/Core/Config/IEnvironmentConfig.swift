@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Verbosity instead")
 public enum LogLevel {
     case off
     case info
@@ -22,7 +23,9 @@ public enum InactivityControl {
 public protocol IEnvironmentConfig {
     func firebasePlist() -> String
     func baseURL() -> String
+    @available(*, deprecated, message: "Use verbosity instead")
     func logLevel() -> LogLevel
+    func verbosity() -> Verbosity
     func forceLogoutOnLaunch() -> Bool
     func forceLogoutOnInactivity() -> InactivityControl
     func firebaseContentVersion() -> String

@@ -1,3 +1,11 @@
+//
+//  Date+Extension.swift
+//  ShortcutFoundation
+//
+//  Created by Gabriel Sabadin on 2021-08-16.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
+//
+
 import Foundation
 
 public extension Date {
@@ -10,7 +18,7 @@ public extension Date {
     var isThisHour: Bool { Calendar.current.isDate(self, equalTo: Date(), toGranularity: .hour) }
     var isFutureDay: Bool { isFuture && !isToday }
     var isPastDay: Bool { isPast && !isToday }
-    
+
     static var now: Date {
         return Date()
     }

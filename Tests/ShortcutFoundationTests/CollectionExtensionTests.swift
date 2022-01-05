@@ -9,7 +9,6 @@ import XCTest
 @testable import ShortcutFoundation
 
 final class CollectionExtensionTests: XCTestCase {
-    
     func test_safe_array_indexing_success() {
         let array = [1, 2, 3, 4]
         let indexOfNumberTwo = 1
@@ -26,5 +25,4 @@ final class CollectionExtensionTests: XCTestCase {
         guard let _ = array[safe: indexOutOfRange] else { return }
         XCTFail()
     }
-    
 }

@@ -39,8 +39,8 @@ extension PublisherError: CustomStringConvertible {
 public protocol Listener: Template {
     func listen(receiveCompletion: @escaping ((Subscribers.Completion<PublisherError>) -> Void),
                 receiveValue: @escaping ((T) -> Void))
-    
+
     func listen(error on: @escaping ((Subscribers.Completion<PublisherError>) -> Void))
-    
+
     func listen(value on: @escaping ((T) -> Void))
 }

@@ -1,3 +1,11 @@
+//
+//  NetworkingRequest.swift
+//  ShortcutFoundation
+//
+//  Created by Gabriel Sabadin, Karl Söderberg on 2021-08-16.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
+//
+
 import Foundation
 import Combine
 
@@ -11,10 +19,6 @@ public class NetworkingRequest: NSObject {
     public var params = Params()
     var headers = [String: String]()
     var multipartData: [MultipartData]?
-    var logLevels: NetworkingLogLevel {
-        get { return logger.logLevels }
-        set { logger.logLevels = newValue }
-    }
     private let logger = NetworkingLogger()
     var timeout: TimeInterval?
     let progressPublisher = PassthroughSubject<Progress, Error>()

@@ -1,3 +1,11 @@
+//
+//  NetworkingClient+Requests.swift
+//  ShortcutFoundation
+//
+//  Created by Gabriel Sabadin, Karl Söderberg on 2021-08-16.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
+//
+
 import Foundation
 import Combine
 
@@ -27,7 +35,6 @@ public extension NetworkingClient {
         let req = NetworkingRequest()
         req.baseURL = baseURL
         req.cachePolicy = cachePolicy
-        req.logLevels = logLevels
         req.headers = headers
         req.httpVerb = httpVerb
         req.route = route

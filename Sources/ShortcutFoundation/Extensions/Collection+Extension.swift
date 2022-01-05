@@ -3,6 +3,7 @@
 //  ShortcutFoundation
 //
 //  Created by Andreas Lif on 2021-11-15.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
 import Foundation

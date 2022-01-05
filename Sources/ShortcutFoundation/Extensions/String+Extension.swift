@@ -1,3 +1,11 @@
+//
+//  String+Extension.swift
+//  ShortcutFoundation
+//
+//  Created by Gabriel Sabadin on 2022-08-16.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
+//
+
 import Foundation
 
 public enum PersonalNumberGender {
@@ -48,7 +56,10 @@ public extension String {
 
 // String + Date
 public enum DateFormat {
-    case time, day, weekday, month, year, dayAndMonth, monthAndYear, dayMonthAndYear, weekdayDayMonthYear, weekdayDayMonthTime, dayMonthTime
+    case time, day, weekday, month,
+         shortMonth, year, dayAndMonth,
+         monthAndYear, dayMonthAndYear, weekdayDayMonthYear,
+         weekdayDayMonthTime, dayMonthTime
 }
 
 public extension String {
@@ -57,7 +68,8 @@ public extension String {
         formatter.dateFormat = formatString(format: format)
         return formatter.string(from: date)
     }
-    
+
+    // swiftlint:disable cyclomatic_complexity
     private static func formatString(format: DateFormat) -> String {
         switch format {
         case .time:
@@ -66,6 +78,8 @@ public extension String {
             return "dd"
         case .weekday:
             return "EEEE"
+        case .shortMonth:
+            return "MMM"
         case .month:
             return "MMMM"
         case .year:
