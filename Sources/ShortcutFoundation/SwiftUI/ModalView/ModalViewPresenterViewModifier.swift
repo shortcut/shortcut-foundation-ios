@@ -1,13 +1,43 @@
+//
+//  ModalViewPresenterViewModifier.swift
+//  ShortcutFoundation
+//
+//  Created by Darya Gurinovich on 05.01.22.
+//  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
+//
+
 import SwiftUI
 
-struct ModalViewPresenterViewModifier<S: ModalPresentationState>: ViewModifier {
-    @EnvironmentObject var modalViewRouter: ModalViewRouter<S>
+/// A view modifier to present modal views from any view.
+///
+/// Works with the implementation of the `ModalPresentationState` protocol that represents all modals that can be shown with this presenter.
+/// Need to set an environmentObject of `ModalViewRouter<S: ModalPresentationState>` before using this modifier otherwise an error will occur.
+///
+public struct ModalViewPresenterViewModifier<PresentationState: ModalPresentationState>: ViewModifier {
+    @EnvironmentObject var modalViewRouter: ModalViewRouter<PresentationState>
+    
+    private let options: [BottomSheet.Options]
+    
+    public init(options: [BottomSheet.Options] = []) {
+        self.options = options
+    }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .fullScreenCoverWithoutConflicts(item: $modalViewRouter.fullScreenModalPresentationState,
-                                             content: { $0.view() })
+                                             content: getContentView)
             .sheetWithoutConflicts(item: $modalViewRouter.sheetPresentationState,
-                                   content: { $0.view() })
+                                   content: getContentView)
+            .bottomSheet(item: $modalViewRouter.customSheetPresentationState,
+                         options: options,
+                         content: getContentView)
+    }
+    
+    private func getContentView(for modalPresentationState: PresentationState) -> some View {
+        modalPresentationState.view(dismissAction: {
+            withAnimation(options.animation) {
+                modalViewRouter.closeModal()
+            }
+        })
     }
 }
