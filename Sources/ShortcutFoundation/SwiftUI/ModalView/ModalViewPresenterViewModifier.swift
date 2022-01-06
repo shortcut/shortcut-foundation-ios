@@ -8,17 +8,12 @@
 
 import SwiftUI
 
-/// A view modifier to present modal views from any view.
-///
-/// Works with the implementation of the `ModalPresentationState` protocol that represents all modals that can be shown with this presenter.
-/// Need to set an environmentObject of `ModalViewRouter<S: ModalPresentationState>` before using this modifier otherwise an error will occur.
-///
-public struct ModalViewPresenterViewModifier<PresentationState: ModalPresentationState>: ViewModifier {
+struct ModalViewPresenterViewModifier<PresentationState: ModalPresentationState>: ViewModifier {
     @EnvironmentObject var modalViewRouter: ModalViewRouter<PresentationState>
 
     private let options: [BottomSheet.Options]
 
-    public init(options: [BottomSheet.Options] = []) {
+    init(options: [BottomSheet.Options] = []) {
         self.options = options
     }
 
@@ -39,5 +34,17 @@ public struct ModalViewPresenterViewModifier<PresentationState: ModalPresentatio
                 modalViewRouter.closeModal()
             }
         })
+    }
+}
+
+public extension View {
+    /// A view modifier to present modal views from any view.
+    ///
+    /// Works with the implementation of the `ModalPresentationState` protocol that represents all modals that can be shown with this presenter.
+    /// Need to set an environmentObject of `ModalViewRouter<S: ModalPresentationState>` before using this modifier otherwise an error will occur.
+    ///
+    func modalViewPresenter<PresentationState: ModalPresentationState>(presentationStateType: PresentationState.Type,
+                                                                       options: [BottomSheet.Options]) -> some View {
+        self.modifier(ModalViewPresenterViewModifier<PresentationState>(options: options))
     }
 }
