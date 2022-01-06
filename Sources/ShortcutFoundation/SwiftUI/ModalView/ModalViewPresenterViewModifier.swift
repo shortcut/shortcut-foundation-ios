@@ -15,9 +15,9 @@ import SwiftUI
 ///
 public struct ModalViewPresenterViewModifier<PresentationState: ModalPresentationState>: ViewModifier {
     @EnvironmentObject var modalViewRouter: ModalViewRouter<PresentationState>
-    
+
     private let options: [BottomSheet.Options]
-    
+
     public init(options: [BottomSheet.Options] = []) {
         self.options = options
     }
@@ -32,7 +32,7 @@ public struct ModalViewPresenterViewModifier<PresentationState: ModalPresentatio
                          options: options,
                          content: getContentView)
     }
-    
+
     private func getContentView(for modalPresentationState: PresentationState) -> some View {
         modalPresentationState.view(dismissAction: {
             withAnimation(options.animation) {

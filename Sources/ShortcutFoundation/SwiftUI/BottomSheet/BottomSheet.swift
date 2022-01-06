@@ -117,7 +117,7 @@ public extension Array where Element == BottomSheet.Options {
 
         return Color(UIColor.tertiaryLabel)
     }
-    
+
     var elementsPadding: EdgeInsets {
         for item in self {
             if case .elementsPadding(let customElementsPadding) = item {
