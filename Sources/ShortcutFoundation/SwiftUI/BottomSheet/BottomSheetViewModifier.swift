@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if !os(macOS)
 import SwiftUI
 
 struct BottomSheetViewModifier<Body: View, Item: Identifiable>: ViewModifier {
@@ -47,3 +48,4 @@ public extension View {
                                               sheetBody: content))
     }
 }
+#endif

@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+#if !os(macOS)
 struct ModalViewPresenterViewModifier<PresentationState: ModalPresentationState>: ViewModifier {
     @EnvironmentObject var modalViewRouter: ModalViewRouter<PresentationState>
 
@@ -48,3 +49,4 @@ public extension View {
         self.modifier(ModalViewPresenterViewModifier<PresentationState>(options: options))
     }
 }
+#endif

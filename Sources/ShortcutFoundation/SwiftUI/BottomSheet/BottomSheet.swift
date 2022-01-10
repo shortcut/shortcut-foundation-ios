@@ -6,6 +6,8 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if !os(macOS)
+import UIKit
 import SwiftUI
 
 public struct BottomSheet {
@@ -160,3 +162,4 @@ public extension Array where Element == BottomSheet.Options {
         return 0
     }
 }
+#endif

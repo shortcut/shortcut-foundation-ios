@@ -7,6 +7,9 @@
 //
 
 import SwiftUI
+#if !os(macOS)
+import UIKit
+#endif
 
 /// Fixes issues related to having multiple .sheet() or .fullScreenCover() functions in the same view hierarcy that SwiftUI cant handle
 
@@ -28,7 +31,8 @@ public extension View {
             EmptyView().sheet(isPresented: isPresented, onDismiss: onDismiss, content: content)
         )
     }
-
+    
+    #if !os(macOS)
     @ViewBuilder
     func fullScreenCoverWithoutConflicts<Item, Content>(item: Binding<Item?>,
                                                         onDismiss: (() -> Void)? = nil,
@@ -56,6 +60,7 @@ public extension View {
             self.sheetWithoutConflicts(isPresented: isPresented, onDismiss: onDismiss, content: content)
         }
     }
+    #endif
 }
 
 public extension View {
@@ -63,11 +68,14 @@ public extension View {
         AnyView(self)
     }
 
+#if !os(macOS)
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
     }
+#endif
 }
 
+#if !os(macOS)
 private struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
     var corners: UIRectCorner = .allCorners
@@ -79,3 +87,4 @@ private struct RoundedCorner: Shape {
         return Path(path.cgPath)
     }
 }
+#endif

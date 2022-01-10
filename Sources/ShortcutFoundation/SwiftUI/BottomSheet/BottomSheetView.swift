@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+#if !os(macOS)
 struct SheetView<Content: View>: View {
     let content: Content
     let options: [BottomSheet.Options]
@@ -90,3 +91,5 @@ private extension CGFloat {
     static var indicatorSize = CGSize(width: 70, height: 4)
     static var sheetSnapRatio = 0.2
 }
+
+#endif
