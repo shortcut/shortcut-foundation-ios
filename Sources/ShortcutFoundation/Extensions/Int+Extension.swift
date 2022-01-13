@@ -11,12 +11,10 @@ import Foundation
 public extension Int {
     
     var isEven: Bool {
-        guard self != 0 else { return true }
-        return self % 2 == 0
+        return self.isMultiple(of: 2)
     }
     var isOdd: Bool {
-        guard self != 0 else { return false }
-        return self % 2 != 0
+        return !(self.isMultiple(of: 2))
     }
     
 }
