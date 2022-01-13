@@ -12,10 +12,8 @@ import XCTest
 
 final class IntTests: XCTestCase {
     
-    let odds = [1, 23, 405, 6897]
-    let evens = [0, 2, 14, 376, 5908]
-    
     func test_odd_ints() {
+        let odds = [1, 23, 405, 6897]
         odds.forEach {
             XCTAssert($0.isOdd)
             XCTAssert(!$0.isEven)
@@ -23,6 +21,7 @@ final class IntTests: XCTestCase {
     }
     
     func test_even_ints() {
+        let evens = [0, 2, 14, 376, 5908]
         evens.forEach {
             XCTAssert($0.isEven)
             XCTAssert(!$0.isOdd)
