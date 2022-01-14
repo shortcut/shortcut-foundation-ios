@@ -14,7 +14,7 @@ public extension Int {
         return self.isMultiple(of: 2)
     }
     var isOdd: Bool {
-        return !(self.isMultiple(of: 2))
+        return !(isEven)
     }
     
 }
