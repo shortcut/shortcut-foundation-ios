@@ -32,6 +32,8 @@ Following our style guide should:
 
 *Note that brevity is not a primary goal.*
 
+[Official Style Guide](https://github.com/shortcut/shortcut-style-guide-ios)
+
 ## Installation
 
 ####Using as a dependency
