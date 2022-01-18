@@ -6,6 +6,9 @@ public enum PersonalNumberGender {
 }
 
 public extension String {
+    
+    static let empty = ""
+    
     static var buildString: String {
         let version = Bundle.main.releaseVersionNumber ?? ""
         let build = Bundle.main.buildVersionNumber ?? ""
