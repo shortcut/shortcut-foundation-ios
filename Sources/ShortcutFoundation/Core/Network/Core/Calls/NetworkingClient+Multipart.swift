@@ -10,25 +10,44 @@ import Foundation
 import Combine
 
 public extension NetworkingClient {
-
+    
+    func upload<T: Decodable>(_ route: String,
+                              params: Params = Params(),
+                              multipartData: MultipartData) -> AnyPublisher<(T?,Progress), Error> {
+        return post(route, params: params, multipartData: multipartData)
+            .receive(on: DispatchQueue.main)
+            .tryCompactMap { data, progress in
+                if progress.isCancelled {
+                    throw NetworkingError.init(status: .cancelled)
+                }
+                
+                if let data = data, progress.isFinished {
+                    return (try decoder.decode(T.self, from: data), progress)
+                } else {
+                    return (nil, progress)
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+    
     func post(_ route: String,
               params: Params = Params(),
               multipartData: MultipartData) -> AnyPublisher<(Data?, Progress), Error> {
         return post(route, params: params, multipartData: [multipartData])
     }
-
+    
     func put(_ route: String,
              params: Params = Params(),
              multipartData: MultipartData) -> AnyPublisher<(Data?, Progress), Error> {
         return put(route, params: params, multipartData: [multipartData])
     }
-
+    
     func patch(_ route: String,
                params: Params = Params(),
                multipartData: MultipartData) -> AnyPublisher<(Data?, Progress), Error> {
         return patch(route, params: params, multipartData: [multipartData])
     }
-
+    
     // Allow multiple multipart data
     func post(_ route: String,
               params: Params = Params(),
@@ -37,7 +56,7 @@ public extension NetworkingClient {
         req.multipartData = multipartData
         return req.uploadPublisher()
     }
-
+    
     func put(_ route: String,
              params: Params = Params(),
              multipartData: [MultipartData]) -> AnyPublisher<(Data?, Progress), Error> {
@@ -45,7 +64,7 @@ public extension NetworkingClient {
         req.multipartData = multipartData
         return req.uploadPublisher()
     }
-
+    
     func patch(_ route: String,
                params: Params = Params(),
                multipartData: [MultipartData]) -> AnyPublisher<(Data?, Progress), Error> {
@@ -53,4 +72,5 @@ public extension NetworkingClient {
         req.multipartData = multipartData
         return req.uploadPublisher()
     }
+    
 }
