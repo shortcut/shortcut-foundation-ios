@@ -8,7 +8,8 @@
 
 import SwiftUI
 
-extension View {
+public extension View {
+    
     func navigate<Destination: View>(
         isActive: Binding<Bool>,
         destination: Destination?
@@ -22,8 +23,7 @@ extension View {
             .hidden()
         )
     }
-}
-extension View {
+    
     func navigate<Item, Destination: View>(
         item: Binding<Item?>,
         destination: (Item) -> Destination
