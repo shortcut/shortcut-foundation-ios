@@ -9,19 +9,25 @@
 import Foundation
 import Combine
 
-public class NetworkingRequest: NSObject {
+public class NetworkingRequest<Payload: Params>: NSObject {
 
     var parameterEncoding = ParameterEncoding.urlEncoded
     var baseURL = ""
     var route = ""
     var httpVerb = HTTPVerb.get
     var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
-    public var params = Params()
+    
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
+    
+    public var params: Payload?
     var headers = [String: String]()
+    
     var multipartData: [MultipartData]?
     private let logger = NetworkingLogger()
     var timeout: TimeInterval?
-    let progressPublisher = PassthroughSubject<Progress, Error>()
+    var progressPublisher: PassthroughSubject<Progress, Error> { sessionDelegate.progressPublisher }
+    let sessionDelegate = SessionDelegate(publisher: PassthroughSubject<Progress, Error>())
 
     public func uploadPublisher() -> AnyPublisher<(Data?, Progress), Error> {
 
@@ -32,7 +38,7 @@ public class NetworkingRequest: NSObject {
         logger.log(request: urlRequest)
 
         let config = URLSessionConfiguration.default
-        let urlSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
         let callPublisher: AnyPublisher<(Data?, Progress), Error> = urlSession.dataTaskPublisher(for: urlRequest)
             .tryMap { (data: Data, response: URLResponse) -> Data in
                 self.logger.log(response: response, data: data)
@@ -70,7 +76,7 @@ public class NetworkingRequest: NSObject {
         logger.log(request: urlRequest)
 
         let config = URLSessionConfiguration.default
-        let urlSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
         return urlSession.dataTaskPublisher(for: urlRequest)
             .tryMap { (data: Data, response: URLResponse) -> Data in
                 self.logger.log(response: response, data: data)
@@ -88,23 +94,35 @@ public class NetworkingRequest: NSObject {
                 return NetworkingError(error: error)
             }.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
+    
+    public func voidPublisher() -> AnyPublisher<Void, Error> {
+        self.publisher().map { _ in Void() }.eraseToAnyPublisher()
+    }
 
     private func getURLWithParams() -> String {
         let urlString = baseURL + route
         guard let url = URL(string: urlString) else {
             return urlString
         }
-
+        
+        guard let params = params else {
+            return urlString
+        }
+        
+        let mirror = Mirror(reflecting: params)
+        
         if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
             var queryItems = urlComponents.queryItems ?? [URLQueryItem]()
-            params.forEach { param in
-                // arrayParam[] syntax
-                if let array = param.value as? [CustomStringConvertible] {
-                    array.forEach {
-                        queryItems.append(URLQueryItem(name: "\(param.key)[]", value: "\($0)"))
+            mirror.children.forEach { param in
+                if let key = param.label {
+                    // arrayParam[] syntax
+                    if let array = param.value as? [CustomStringConvertible] {
+                        array.forEach {
+                            queryItems.append(URLQueryItem(name: "\(key)[]", value: "\($0)"))
+                        }
                     }
+                    queryItems.append(URLQueryItem(name: key, value: "\(param.value)"))
                 }
-                queryItems.append(URLQueryItem(name: param.key, value: "\(param.value)"))
             }
             urlComponents.queryItems = queryItems
             return urlComponents.url?.absoluteString ?? urlString
@@ -140,13 +158,14 @@ public class NetworkingRequest: NSObject {
             request.timeoutInterval = timeout
         }
 
-        if httpVerb != .get && multipartData == nil {
+        if httpVerb != .get && multipartData == nil, let params = params {
             switch parameterEncoding {
             case .urlEncoded:
-                request.httpBody = percentEncodedString().data(using: .utf8)
+                break
+                // TODO: - Add support back
+//                request.httpBody =  percentEncodedString().data(using: .utf8)
             case .json:
-                let jsonData = try? JSONSerialization.data(withJSONObject: params)
-                request.httpBody = jsonData
+                request.httpBody = try? encoder.encode(params)
             }
         }
 
@@ -162,7 +181,9 @@ public class NetworkingRequest: NSObject {
 
     private func buildMultipartHttpBody(params: Params, multiparts: [MultipartData], boundary: String) -> Data {
         // Combine all multiparts together
-        let allMultiparts: [HttpBodyConvertible] = [params] + multiparts
+        let allMultiparts: [HttpBodyConvertible] = multiparts
+        // TODO: - Add support back
+//        let allMultiparts: [HttpBodyConvertible] = [params] + multiparts
         let boundaryEnding = "--\(boundary)--".data(using: .utf8)!
 
         // Convert multiparts to boundary-seperated Data and combine them
@@ -174,22 +195,23 @@ public class NetworkingRequest: NSObject {
             + boundaryEnding
     }
 
-    func percentEncodedString() -> String {
-        return params.map { key, value in
-            let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
-            if let array = value as? [CustomStringConvertible] {
-                return array.map { entry in
-                    let escapedValue = "\(entry)"
-                        .addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
-                    return "\(key)[]=\(escapedValue)" }.joined(separator: "&"
-                    )
-            } else {
-                let escapedValue = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
-                return "\(escapedKey)=\(escapedValue)"
-            }
-        }
-        .joined(separator: "&")
-    }
+    // TODO: - Add support back
+//
+//    func percentEncodedString() -> String {
+//        return params.map { key, value in
+//            let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+//            if let array = value as? [CustomStringConvertible] {
+//                return array.map { entry in
+//                    let escapedValue = "\(entry)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+//                    return "\(key)[]=\(escapedValue)"
+//                }.joined(separator: "&")
+//            } else {
+//                let escapedValue = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+//                return "\(escapedKey)=\(escapedValue)"
+//            }
+//        }
+//        .joined(separator: "&")
+//    }
 }
 
 // Thansks to https://stackoverflow.com/questions/26364914/http-request-in-swift-with-post-method
@@ -203,15 +225,25 @@ extension CharacterSet {
     }()
 }
 
-extension NetworkingRequest: URLSessionTaskDelegate {
-    public func urlSession(_ session: URLSession,
-                           task: URLSessionTask,
-                           didSendBodyData bytesSent: Int64,
-                           totalBytesSent: Int64,
-                           totalBytesExpectedToSend: Int64) {
-        let progress = Progress(totalUnitCount: totalBytesExpectedToSend)
-        progress.completedUnitCount = totalBytesSent
-        progressPublisher.send(progress)
+extension NetworkingRequest {
+    
+    class SessionDelegate: NSObject, URLSessionTaskDelegate {
+        
+        let progressPublisher: PassthroughSubject<Progress, Error>
+        
+        init(publisher: PassthroughSubject<Progress, Error>) {
+            self.progressPublisher = publisher
+        }
+        
+        public func urlSession(_ session: URLSession,
+                               task: URLSessionTask,
+                               didSendBodyData bytesSent: Int64,
+                               totalBytesSent: Int64,
+                               totalBytesExpectedToSend: Int64) {
+            let progress = Progress(totalUnitCount: totalBytesExpectedToSend)
+            progress.completedUnitCount = totalBytesSent
+            progressPublisher.send(progress)
+        }
     }
 }
 

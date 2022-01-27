@@ -13,64 +13,72 @@ public protocol NetworkingService {
     var network: NetworkingClient { get }
 }
 
-public extension NetworkingService {
-    func get(_ route: String, params: Params = Params()) -> AnyPublisher<Data, Error> {
-        network.get(route, params: params)
+public extension NetworkingClient {
+    func get<Payload: Params>(_ route: String, params: Payload) -> AnyPublisher<Data, Error> {
+        request(.get, route, params: params).publisher()
+    }
+    
+    func get(_ route: String) -> AnyPublisher<Data, Error> {
+        request(.get, route).publisher()
+    }
+    
+    func get<Payload: Params>(_ route: String, params: Payload) -> AnyPublisher<Void, Error> {
+        request(.get, route, params: params).voidPublisher()
+    }
+    
+    func get(_ route: String) -> AnyPublisher<Void, Error> {
+        request(.get, route).voidPublisher()
     }
 
-    func post(_ route: String, params: Params = Params()) -> AnyPublisher<Data, Error> {
-        network.post(route, params: params)
+    func post<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Data, Error> {
+        request(.post, route, params: params).publisher()
     }
 
-    func put(_ route: String, params: Params = Params()) -> AnyPublisher<Data, Error> {
-        network.put(route, params: params)
+    func put<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Data, Error> {
+        request(.put, route, params: params).publisher()
     }
 
-    func patch(_ route: String, params: Params = Params()) -> AnyPublisher<Data, Error> {
-        network.patch(route, params: params)
+    func patch<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Data, Error> {
+        request(.patch, route, params: params).publisher()
     }
 
-    func delete(_ route: String, params: Params = Params()) -> AnyPublisher<Data, Error> {
-        network.delete(route, params: params)
+    func delete<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Data, Error> {
+        request(.delete, route, params: params).publisher()
     }
 
-    func get(_ route: String, params: Params = Params()) -> AnyPublisher<Void, Error> {
-        network.get(route, params: params)
+//    func post<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
+//        post(route, params: params)
+//    }
+
+    func put<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
+        request(.put, route, params: params).voidPublisher()
     }
 
-    func post(_ route: String, params: Params = Params()) -> AnyPublisher<Void, Error> {
-        network.post(route, params: params)
+    func patch<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
+        request(.patch, route, params: params).voidPublisher()
     }
 
-    func put(_ route: String, params: Params = Params()) -> AnyPublisher<Void, Error> {
-        network.put(route, params: params)
+    func delete<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
+        request(.delete, route, params: params).voidPublisher()
     }
 
-    func patch(_ route: String, params: Params = Params()) -> AnyPublisher<Void, Error> {
-        network.patch(route, params: params)
-    }
-
-    func delete(_ route: String, params: Params = Params()) -> AnyPublisher<Void, Error> {
-        network.delete(route, params: params)
-    }
-
-    func get(_ route: String, params: Params = Params()) -> AnyPublisher<Any, Error> {
-        network.get(route, params: params)
-    }
-
-    func post(_ route: String, params: Params = Params()) -> AnyPublisher<Any, Error> {
-        network.post(route, params: params)
-    }
-
-    func put(_ route: String, params: Params = Params()) -> AnyPublisher<Any, Error> {
-        network.put(route, params: params)
-    }
-
-    func patch(_ route: String, params: Params = Params()) -> AnyPublisher<Any, Error> {
-        network.patch(route, params: params)
-    }
-
-    func delete(_ route: String, params: Params = Params()) -> AnyPublisher<Any, Error> {
-        network.delete(route, params: params)
-    }
+//    func get<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
+//        network.get(route, params: params)
+//    }
+//
+//    func post<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
+//        network.post(route, params: params)
+//    }
+//
+//    func put<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
+//        network.put(route, params: params)
+//    }
+//
+//    func patch<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
+//        network.patch(route, params: params)
+//    }
+//
+//    func delete<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
+//        network.delete(route, params: params)
+//    }
 }

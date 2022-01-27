@@ -8,4 +8,4 @@
 
 import Foundation
 
-public typealias Params = [String: CustomStringConvertible]
+public typealias Params = Encodable
