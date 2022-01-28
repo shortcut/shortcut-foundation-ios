@@ -161,9 +161,7 @@ public class NetworkingRequest<Payload: Params>: NSObject {
         if httpVerb != .get && multipartData == nil, let params = params {
             switch parameterEncoding {
             case .urlEncoded:
-                break
-                // TODO: - Add support back
-//                request.httpBody =  percentEncodedString().data(using: .utf8)
+                request.httpBody =  percentEncodedString().data(using: .utf8)
             case .json:
                 request.httpBody = try? encoder.encode(params)
             }
@@ -183,7 +181,7 @@ public class NetworkingRequest<Payload: Params>: NSObject {
         // Combine all multiparts together
         let allMultiparts: [HttpBodyConvertible] = multiparts
         // TODO: - Add support back
-//        let allMultiparts: [HttpBodyConvertible] = [params] + multiparts
+        // let allMultiparts: [HttpBodyConvertible] = [getParamsDataFromEncodable()] + multiparts
         let boundaryEnding = "--\(boundary)--".data(using: .utf8)!
 
         // Convert multiparts to boundary-seperated Data and combine them
@@ -194,24 +192,32 @@ public class NetworkingRequest<Payload: Params>: NSObject {
             .reduce(Data.init(), +)
             + boundaryEnding
     }
+    
+    func getParamsDataFromEncodable() -> [String : Any] {
+        do {
+            let data = try encoder.encode(params)
+            guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return ["": ""] }
+            return json
+        } catch {
+            return ["": ""]
+        }
+    }
 
-    // TODO: - Add support back
-//
-//    func percentEncodedString() -> String {
-//        return params.map { key, value in
-//            let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
-//            if let array = value as? [CustomStringConvertible] {
-//                return array.map { entry in
-//                    let escapedValue = "\(entry)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
-//                    return "\(key)[]=\(escapedValue)"
-//                }.joined(separator: "&")
-//            } else {
-//                let escapedValue = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
-//                return "\(escapedKey)=\(escapedValue)"
-//            }
-//        }
-//        .joined(separator: "&")
-//    }
+    func percentEncodedString() -> String {
+        return getParamsDataFromEncodable().map { key, value in
+            let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+            if let array = value as? [CustomStringConvertible] {
+                return array.map { entry in
+                    let escapedValue = "\(entry)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+                    return "\(key)[]=\(escapedValue)"
+                }.joined(separator: "&")
+            } else {
+                let escapedValue = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+                return "\(escapedKey)=\(escapedValue)"
+            }
+        }
+        .joined(separator: "&")
+    }
 }
 
 // Thansks to https://stackoverflow.com/questions/26364914/http-request-in-swift-with-post-method
