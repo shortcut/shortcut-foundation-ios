@@ -21,7 +21,7 @@ public extension NetworkingClient {
                     throw NetworkingError.init(status: .cancelled)
                 }
                 
-                if let data = data, progress.isFinished {
+                if let data = data {
                     return (try decoder.decode(T.self, from: data), progress)
                 } else {
                     return (nil, progress)
