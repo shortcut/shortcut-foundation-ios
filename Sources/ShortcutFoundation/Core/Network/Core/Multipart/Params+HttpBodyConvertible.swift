@@ -7,16 +7,35 @@
 //
 
 import Foundation
-//
-//extension Params: HttpBodyConvertible {
-//    public func buildHttpBodyPart(boundary: String) -> Data {
-//        let httpBody = NSMutableData()
-//        forEach { (name, value) in
-//            httpBody.appendString("--\(boundary)\r\n")
-//            httpBody.appendString("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n")
-//            httpBody.appendString(value.description)
-//            httpBody.appendString("\r\n")
-//        }
-//        return httpBody as Data
-//    }
-//}
+
+enum ParamsEncodingError: Error {
+    case failedToDecodeParams
+}
+
+extension Encodable {
+    
+    func toParams(using encoder: JSONEncoder) throws -> [String: CustomStringConvertible] {
+        guard let params = try toParamsRaw(using: encoder) as? [String: CustomStringConvertible] else {
+            throw ParamsEncodingError.failedToDecodeParams
+        }
+        return params
+    }
+    
+    private func toParamsRaw(using encoder: JSONEncoder) throws -> Any {
+        let data = try encoder.encode(self)
+        return try JSONSerialization.jsonObject(with: data, options: [])
+    }
+}
+
+extension Dictionary: HttpBodyConvertible where Key == String, Value == CustomStringConvertible {
+    public func buildHttpBodyPart(boundary: String) -> Data {
+        let httpBody = NSMutableData()
+        forEach { (name, value) in
+            httpBody.appendString("--\(boundary)\r\n")
+            httpBody.appendString("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n")
+            httpBody.appendString(value.description)
+            httpBody.appendString("\r\n")
+        }
+        return httpBody as Data
+    }
+}

@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 public class NetworkingRequest<Payload: Params>: NSObject {
-
+    
     var parameterEncoding = ParameterEncoding.urlEncoded
     var baseURL = ""
     var route = ""
@@ -28,15 +28,15 @@ public class NetworkingRequest<Payload: Params>: NSObject {
     var timeout: TimeInterval?
     var progressPublisher: PassthroughSubject<Progress, Error> { sessionDelegate.progressPublisher }
     let sessionDelegate = SessionDelegate(publisher: PassthroughSubject<Progress, Error>())
-
+    
     public func uploadPublisher() -> AnyPublisher<(Data?, Progress), Error> {
-
+        
         guard let urlRequest = buildURLRequest() else {
             return Fail(error: NetworkingError.unableToParseRequest as Error)
                 .eraseToAnyPublisher()
         }
         logger.log(request: urlRequest)
-
+        
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
         let callPublisher: AnyPublisher<(Data?, Progress), Error> = urlSession.dataTaskPublisher(for: urlRequest)
@@ -57,24 +57,24 @@ public class NetworkingRequest<Payload: Params>: NSObject {
             }.map { data -> (Data?, Progress) in
                 return (data, Progress())
             }.eraseToAnyPublisher()
-
+        
         let progressPublisher2: AnyPublisher<(Data?, Progress), Error> = progressPublisher
             .map { progress -> (Data?, Progress) in
                 return (nil, progress)
             }.eraseToAnyPublisher()
-
+        
         return Publishers.Merge(callPublisher, progressPublisher2)
             .receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
-
+    
     public func publisher() -> AnyPublisher<Data, Error> {
-
+        
         guard let urlRequest = buildURLRequest() else {
             return Fail(error: NetworkingError.unableToParseRequest as Error)
                 .eraseToAnyPublisher()
         }
         logger.log(request: urlRequest)
-
+        
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
         return urlSession.dataTaskPublisher(for: urlRequest)
@@ -98,7 +98,7 @@ public class NetworkingRequest<Payload: Params>: NSObject {
     public func voidPublisher() -> AnyPublisher<Void, Error> {
         self.publisher().map { _ in Void() }.eraseToAnyPublisher()
     }
-
+    
     private func getURLWithParams() -> String {
         let urlString = baseURL + route
         guard let url = URL(string: urlString) else {
@@ -129,17 +129,17 @@ public class NetworkingRequest<Payload: Params>: NSObject {
         }
         return urlString
     }
-
+    
     internal func buildURLRequest() -> URLRequest? {
         var urlString = baseURL + route
         if httpVerb == .get {
             urlString = getURLWithParams()
         }
-
+        
         let url = URL(string: urlString)!
         var request = URLRequest(url: url)
         request.cachePolicy = cachePolicy
-
+        
         if httpVerb != .get && multipartData == nil {
             switch parameterEncoding {
             case .urlEncoded:
@@ -148,16 +148,16 @@ public class NetworkingRequest<Payload: Params>: NSObject {
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             }
         }
-
+        
         request.httpMethod = httpVerb.rawValue
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
         }
-
+        
         if let timeout = timeout {
             request.timeoutInterval = timeout
         }
-
+        
         if httpVerb != .get && multipartData == nil, let params = params {
             switch parameterEncoding {
             case .urlEncoded:
@@ -166,7 +166,7 @@ public class NetworkingRequest<Payload: Params>: NSObject {
                 request.httpBody = try? encoder.encode(params)
             }
         }
-
+        
         // Multipart
         if let multiparts = multipartData {
             // Construct a unique boundary to separate values
@@ -176,14 +176,20 @@ public class NetworkingRequest<Payload: Params>: NSObject {
         }
         return request
     }
-
+    
     private func buildMultipartHttpBody(params: Params, multiparts: [MultipartData], boundary: String) -> Data {
         // Combine all multiparts together
-        let allMultiparts: [HttpBodyConvertible] = multiparts
-        // TODO: - Add support back
-        // let allMultiparts: [HttpBodyConvertible] = [getParamsDataFromEncodable()] + multiparts
+        var allMultiparts: [HttpBodyConvertible] = multiparts
+        
+        do {
+            let paramsData = try params.toParams(using: encoder)
+            allMultiparts.append(paramsData)
+        } catch {
+            print(error)
+        }
+        
         let boundaryEnding = "--\(boundary)--".data(using: .utf8)!
-
+        
         // Convert multiparts to boundary-seperated Data and combine them
         return allMultiparts
             .map { (multipart: HttpBodyConvertible) -> Data in
@@ -193,18 +199,17 @@ public class NetworkingRequest<Payload: Params>: NSObject {
             + boundaryEnding
     }
     
-    func getParamsDataFromEncodable() -> [String : Any] {
+    func paramsData() -> [String: Any] {
         do {
-            let data = try encoder.encode(params)
-            guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return ["": ""] }
-            return json
+            let paramsData = try params.toParams(using: encoder)
+            return paramsData
         } catch {
-            return ["": ""]
+            return [:]
         }
     }
-
+    
     func percentEncodedString() -> String {
-        return getParamsDataFromEncodable().map { key, value in
+        return paramsData().map { key, value in
             let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
             if let array = value as? [CustomStringConvertible] {
                 return array.map { entry in
