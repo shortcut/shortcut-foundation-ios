@@ -1,5 +1,5 @@
 //
-//  Params+HttpBodyConvertible.swift
+//  Encodable+HttpBodyConvertible.swift
 //  ShortcutFoundation
 //
 //  Created by Gabriel Sabadin, Karl Söderberg on 2021-08-16.
@@ -8,17 +8,19 @@
 
 import Foundation
 
-enum ParamsEncodingError: Error {
-    case failedToDecodeParams
-}
-
 extension Encodable {
     
     func toParams(using encoder: JSONEncoder) throws -> [String: CustomStringConvertible] {
-        guard let params = try toParamsRaw(using: encoder) as? [String: CustomStringConvertible] else {
-            throw ParamsEncodingError.failedToDecodeParams
+        
+        do {
+            guard let params = try toParamsRaw(using: encoder) as? [String: CustomStringConvertible] else {
+                throw NetworkingError(status: .unableToParseRequest)
+            }
+            return params
+            
+        } catch {
+            throw NetworkingError(error: error, status: .unableToParseRequest)
         }
-        return params
     }
     
     private func toParamsRaw(using encoder: JSONEncoder) throws -> Any {

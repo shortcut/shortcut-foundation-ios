@@ -11,7 +11,7 @@ import Combine
 
 public extension NetworkingClient {
     
-    internal func request<Payload: Params>(_ httpVerb: HTTPVerb, _ route: String, params: Payload) -> NetworkingRequest<Payload> {
+    internal func request<Payload: Encodable>(_ httpVerb: HTTPVerb, _ route: String, params: Payload) -> NetworkingRequest<Payload> {
         let req = NetworkingRequest<Payload>()
         req.baseURL = baseURL
         req.cachePolicy = cachePolicy
@@ -20,6 +20,7 @@ public extension NetworkingClient {
         req.route = route
         req.params = params
         req.parameterEncoding = parameterEncoding
+        req.encoder = self.encoder
         
         if let timeout = timeout {
             req.timeout = timeout
@@ -36,6 +37,7 @@ public extension NetworkingClient {
         req.route = route
         req.params = nil
         req.parameterEncoding = parameterEncoding
+        req.encoder = self.encoder
         
         if let timeout = timeout {
             req.timeout = timeout

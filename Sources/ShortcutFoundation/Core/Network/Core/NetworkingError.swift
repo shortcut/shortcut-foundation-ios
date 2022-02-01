@@ -146,6 +146,7 @@ public struct NetworkingError: Error, LocalizedError {
     public var status: Status
     public var code: Int { return status.rawValue }
     public var jsonPayload: Any?
+    public var underlyingError: Error?
 
     public init(errorCode: Int) {
         self.status = Status(rawValue: errorCode) ?? .unknown
@@ -155,16 +156,24 @@ public struct NetworkingError: Error, LocalizedError {
         self.status = status
     }
 
-    public init(error: Error) {
-        if let networkingError = error as? NetworkingError {
-            self.status = networkingError.status
-            self.jsonPayload = networkingError.jsonPayload
-        } else {
-            if let theError = error as? URLError {
-                self.status = Status(rawValue: theError.errorCode) ?? .unknown
-            } else {
-                self.status = .unknown
-            }
+    public init(error: Error, status: Status? = nil) {
+        
+        switch error {
+        case let error as NetworkingError:
+            self.status = error.status
+            jsonPayload = error.jsonPayload
+        case let error as URLError:
+            underlyingError = error
+            self.status = status ?? Status(rawValue: error.errorCode) ?? .unknown
+        case let error as DecodingError:
+            underlyingError = error
+            self.status = status ?? .unableToParseResponse
+        case let error as EncodingError:
+            underlyingError = error
+            self.status = status ?? .unableToParseRequest
+        default:
+            underlyingError = error
+            self.status = status ?? .unknown
         }
     }
 
@@ -203,21 +212,3 @@ extension NetworkingError {
 
 }
 
-extension DecodingError {
-
-    public var description: String? {
-        switch self {
-        case .typeMismatch(_, let value):
-            return "typeMismatch error: \(value.debugDescription)  \(self.localizedDescription)"
-        case .valueNotFound(_, let value):
-            return "valueNotFound error: \(value.debugDescription)  \(self.localizedDescription)"
-        case .keyNotFound(_, let value):
-            return "keyNotFound error: \(value.debugDescription)  \(self.localizedDescription)"
-        case .dataCorrupted(let key):
-            return "dataCorrupted error at: \(key)  \(self.localizedDescription)"
-        default:
-            return "decoding error: \(self.localizedDescription)"
-        }
-    }
-
-}

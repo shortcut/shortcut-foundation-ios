@@ -9,16 +9,14 @@
 import Foundation
 import Combine
 
-public class NetworkingRequest<Payload: Params>: NSObject {
+public class NetworkingRequest<Payload: Encodable> {
     
     var parameterEncoding = ParameterEncoding.urlEncoded
     var baseURL = ""
     var route = ""
     var httpVerb = HTTPVerb.get
     var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
-    
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
+    var encoder = JSONEncoder()
     
     public var params: Payload?
     var headers = [String: String]()
@@ -26,77 +24,51 @@ public class NetworkingRequest<Payload: Params>: NSObject {
     var multipartData: [MultipartData]?
     private let logger = NetworkingLogger()
     var timeout: TimeInterval?
-    var progressPublisher: PassthroughSubject<Progress, Error> { sessionDelegate.progressPublisher }
-    let sessionDelegate = SessionDelegate(publisher: PassthroughSubject<Progress, Error>())
+    var progressPublisher: CurrentValueSubject<Progress, NetworkingError> { sessionDelegate.progressPublisher }
+    let sessionDelegate = SessionDelegate(publisher: CurrentValueSubject<Progress, NetworkingError>(Progress()))
     
-    public func uploadPublisher() -> AnyPublisher<(Data?, Progress), Error> {
+    public func publisher() -> AnyPublisher<Data, NetworkingError> {
         
         guard let urlRequest = buildURLRequest() else {
-            return Fail(error: NetworkingError.unableToParseRequest as Error)
+            return Fail(error: NetworkingError.unableToParseRequest)
                 .eraseToAnyPublisher()
         }
+        
         logger.log(request: urlRequest)
         
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
-        let callPublisher: AnyPublisher<(Data?, Progress), Error> = urlSession.dataTaskPublisher(for: urlRequest)
-            .tryMap { (data: Data, response: URLResponse) -> Data in
-                self.logger.log(response: response, data: data)
-                if let httpURLResponse = response as? HTTPURLResponse {
-                    if !(200...299 ~= httpURLResponse.statusCode) {
-                        var error = NetworkingError(errorCode: httpURLResponse.statusCode)
-                        if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
-                            error.jsonPayload = json
-                        }
-                        throw error
-                    }
-                }
-                return data
-            }.mapError { error -> NetworkingError in
-                return NetworkingError(error: error)
-            }.map { data -> (Data?, Progress) in
-                return (data, Progress())
-            }.eraseToAnyPublisher()
         
-        let progressPublisher2: AnyPublisher<(Data?, Progress), Error> = progressPublisher
-            .map { progress -> (Data?, Progress) in
-                return (nil, progress)
-            }.eraseToAnyPublisher()
-        
-        return Publishers.Merge(callPublisher, progressPublisher2)
-            .receive(on: DispatchQueue.main).eraseToAnyPublisher()
-    }
-    
-    public func publisher() -> AnyPublisher<Data, Error> {
-        
-        guard let urlRequest = buildURLRequest() else {
-            return Fail(error: NetworkingError.unableToParseRequest as Error)
-                .eraseToAnyPublisher()
-        }
-        logger.log(request: urlRequest)
-        
-        let config = URLSessionConfiguration.default
-        let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
         return urlSession.dataTaskPublisher(for: urlRequest)
-            .tryMap { (data: Data, response: URLResponse) -> Data in
-                self.logger.log(response: response, data: data)
-                if let httpURLResponse = response as? HTTPURLResponse {
-                    if !(200...299 ~= httpURLResponse.statusCode) {
-                        var error = NetworkingError(errorCode: httpURLResponse.statusCode)
-                        if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
-                            error.jsonPayload = json
-                        }
-                        throw error
-                    }
-                }
-                return data
-            }.mapError { error -> NetworkingError in
-                return NetworkingError(error: error)
-            }.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+            .tryMap { try self.handleResponse(data: $0.data, response: $0.response) }
+            .mapError { NetworkingError(error: $0) }
+            .eraseToAnyPublisher()
     }
     
-    public func voidPublisher() -> AnyPublisher<Void, Error> {
-        self.publisher().map { _ in Void() }.eraseToAnyPublisher()
+    private func handleResponse(data: Data, response: URLResponse) throws -> Data {
+        self.logger.log(response: response, data: data)
+        
+        if let httpURLResponse = response as? HTTPURLResponse {
+            if !(200...299 ~= httpURLResponse.statusCode) {
+                var error = NetworkingError(errorCode: httpURLResponse.statusCode)
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
+                    error.jsonPayload = json
+                }
+                throw error
+            }
+        }
+        return data
+    }
+    
+    public func voidPublisher() -> AnyPublisher<Void, NetworkingError> {
+        publisher().map { _ in Void() }.eraseToAnyPublisher()
+    }
+    
+    public func uploadPublisher() -> AnyPublisher<(Data?, Progress), NetworkingError> {
+        publisher()
+            .combineLatest(progressPublisher)
+            .map { ($0.0, $0.1) }
+            .eraseToAnyPublisher()
     }
     
     private func getURLWithParams() -> String {
@@ -177,15 +149,17 @@ public class NetworkingRequest<Payload: Params>: NSObject {
         return request
     }
     
-    private func buildMultipartHttpBody(params: Params, multiparts: [MultipartData], boundary: String) -> Data {
+    private func buildMultipartHttpBody(params: Payload?, multiparts: [MultipartData], boundary: String) -> Data {
         // Combine all multiparts together
         var allMultiparts: [HttpBodyConvertible] = multiparts
         
-        do {
-            let paramsData = try params.toParams(using: encoder)
-            allMultiparts.append(paramsData)
-        } catch {
-            print(error)
+        if let params = params {
+            do {
+                let paramsData = try params.toParams(using: encoder)
+                allMultiparts.append(paramsData)
+            } catch {
+                print(error)
+            }
         }
         
         let boundaryEnding = "--\(boundary)--".data(using: .utf8)!
@@ -240,9 +214,9 @@ extension NetworkingRequest {
     
     class SessionDelegate: NSObject, URLSessionTaskDelegate {
         
-        let progressPublisher: PassthroughSubject<Progress, Error>
+        let progressPublisher: CurrentValueSubject<Progress, NetworkingError>
         
-        init(publisher: PassthroughSubject<Progress, Error>) {
+        init(publisher: CurrentValueSubject<Progress, NetworkingError>) {
             self.progressPublisher = publisher
         }
         
