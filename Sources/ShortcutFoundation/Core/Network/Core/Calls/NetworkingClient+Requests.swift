@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 public extension NetworkingClient {
-    
+
     internal func request<Payload: Encodable>(_ httpVerb: HTTPVerb, _ route: String, params: Payload) -> NetworkingRequest<Payload> {
         let req = NetworkingRequest<Payload>()
         req.baseURL = baseURL
@@ -21,13 +21,13 @@ public extension NetworkingClient {
         req.params = params
         req.parameterEncoding = parameterEncoding
         req.encoder = self.encoder
-        
+
         if let timeout = timeout {
             req.timeout = timeout
         }
         return req
     }
-    
+
     internal func request(_ httpVerb: HTTPVerb, _ route: String) -> NetworkingRequest<String> {
         let req = NetworkingRequest<String>()
         req.baseURL = baseURL
@@ -38,7 +38,7 @@ public extension NetworkingClient {
         req.params = nil
         req.parameterEncoding = parameterEncoding
         req.encoder = self.encoder
-        
+
         if let timeout = timeout {
             req.timeout = timeout
         }

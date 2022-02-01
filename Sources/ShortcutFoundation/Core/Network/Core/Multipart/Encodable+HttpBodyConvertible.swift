@@ -9,20 +9,20 @@
 import Foundation
 
 extension Encodable {
-    
+
     func toParams(using encoder: JSONEncoder) throws -> [String: CustomStringConvertible] {
-        
+
         do {
             guard let params = try toParamsRaw(using: encoder) as? [String: CustomStringConvertible] else {
                 throw NetworkingError(status: .unableToParseRequest)
             }
             return params
-            
+
         } catch {
             throw NetworkingError(error: error, status: .unableToParseRequest)
         }
     }
-    
+
     private func toParamsRaw(using encoder: JSONEncoder) throws -> Any {
         let data = try encoder.encode(self)
         return try JSONSerialization.jsonObject(with: data, options: [])

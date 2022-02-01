@@ -31,7 +31,7 @@ public extension View {
             EmptyView().sheet(isPresented: isPresented, onDismiss: onDismiss, content: content)
         )
     }
-    
+
     #if !os(macOS)
     @ViewBuilder
     func fullScreenCoverWithoutConflicts<Item, Content>(item: Binding<Item?>,

@@ -10,44 +10,44 @@ import Foundation
 import Combine
 
 public class NetworkingRequest<Payload: Encodable> {
-    
+
     var parameterEncoding = ParameterEncoding.urlEncoded
     var baseURL = ""
     var route = ""
     var httpVerb = HTTPVerb.get
     var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
     var encoder = JSONEncoder()
-    
+
     public var params: Payload?
     var headers = [String: String]()
-    
+
     var multipartData: [MultipartData]?
     private let logger = NetworkingLogger()
     var timeout: TimeInterval?
     var progressPublisher: CurrentValueSubject<Progress, NetworkingError> { sessionDelegate.progressPublisher }
-    let sessionDelegate = SessionDelegate(publisher: CurrentValueSubject<Progress, NetworkingError>(Progress()))
-    
+    weak var sessionDelegate = SessionDelegate(publisher: CurrentValueSubject<Progress, NetworkingError>(Progress()))
+
     public func publisher() -> AnyPublisher<Data, NetworkingError> {
-        
+
         guard let urlRequest = buildURLRequest() else {
             return Fail(error: NetworkingError.unableToParseRequest)
                 .eraseToAnyPublisher()
         }
-        
+
         logger.log(request: urlRequest)
-        
+
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
-        
+
         return urlSession.dataTaskPublisher(for: urlRequest)
             .tryMap { try self.handleResponse(data: $0.data, response: $0.response) }
             .mapError { NetworkingError(error: $0) }
             .eraseToAnyPublisher()
     }
-    
+
     private func handleResponse(data: Data, response: URLResponse) throws -> Data {
         self.logger.log(response: response, data: data)
-        
+
         if let httpURLResponse = response as? HTTPURLResponse {
             if !(200...299 ~= httpURLResponse.statusCode) {
                 var error = NetworkingError(errorCode: httpURLResponse.statusCode)
@@ -59,30 +59,30 @@ public class NetworkingRequest<Payload: Encodable> {
         }
         return data
     }
-    
+
     public func voidPublisher() -> AnyPublisher<Void, NetworkingError> {
         publisher().map { _ in Void() }.eraseToAnyPublisher()
     }
-    
+
     public func uploadPublisher() -> AnyPublisher<(Data?, Progress), NetworkingError> {
         publisher()
             .combineLatest(progressPublisher)
             .map { ($0.0, $0.1) }
             .eraseToAnyPublisher()
     }
-    
+
     private func getURLWithParams() -> String {
         let urlString = baseURL + route
         guard let url = URL(string: urlString) else {
             return urlString
         }
-        
+
         guard let params = params else {
             return urlString
         }
-        
+
         let mirror = Mirror(reflecting: params)
-        
+
         if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
             var queryItems = urlComponents.queryItems ?? [URLQueryItem]()
             mirror.children.forEach { param in
@@ -101,17 +101,17 @@ public class NetworkingRequest<Payload: Encodable> {
         }
         return urlString
     }
-    
+
     internal func buildURLRequest() -> URLRequest? {
         var urlString = baseURL + route
         if httpVerb == .get {
             urlString = getURLWithParams()
         }
-        
+
         let url = URL(string: urlString)!
         var request = URLRequest(url: url)
         request.cachePolicy = cachePolicy
-        
+
         if httpVerb != .get && multipartData == nil {
             switch parameterEncoding {
             case .urlEncoded:
@@ -120,16 +120,16 @@ public class NetworkingRequest<Payload: Encodable> {
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             }
         }
-        
+
         request.httpMethod = httpVerb.rawValue
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
         }
-        
+
         if let timeout = timeout {
             request.timeoutInterval = timeout
         }
-        
+
         if httpVerb != .get && multipartData == nil, let params = params {
             switch parameterEncoding {
             case .urlEncoded:
@@ -138,7 +138,7 @@ public class NetworkingRequest<Payload: Encodable> {
                 request.httpBody = try? encoder.encode(params)
             }
         }
-        
+
         // Multipart
         if let multiparts = multipartData {
             // Construct a unique boundary to separate values
@@ -148,11 +148,11 @@ public class NetworkingRequest<Payload: Encodable> {
         }
         return request
     }
-    
+
     private func buildMultipartHttpBody(params: Payload?, multiparts: [MultipartData], boundary: String) -> Data {
         // Combine all multiparts together
         var allMultiparts: [HttpBodyConvertible] = multiparts
-        
+
         if let params = params {
             do {
                 let paramsData = try params.toParams(using: encoder)
@@ -161,9 +161,9 @@ public class NetworkingRequest<Payload: Encodable> {
                 print(error)
             }
         }
-        
+
         let boundaryEnding = "--\(boundary)--".data(using: .utf8)!
-        
+
         // Convert multiparts to boundary-separated Data and combine them
         return allMultiparts
             .map { (multipart: HttpBodyConvertible) -> Data in
@@ -172,7 +172,7 @@ public class NetworkingRequest<Payload: Encodable> {
             .reduce(Data.init(), +)
             + boundaryEnding
     }
-    
+
     func paramsData() -> [String: Any] {
         do {
             let paramsData = try params.toParams(using: encoder)
@@ -181,7 +181,7 @@ public class NetworkingRequest<Payload: Encodable> {
             return [:]
         }
     }
-    
+
     func percentEncodedString() -> String {
         return paramsData().map { key, value in
             let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
@@ -211,15 +211,15 @@ extension CharacterSet {
 }
 
 extension NetworkingRequest {
-    
+
     class SessionDelegate: NSObject, URLSessionTaskDelegate {
-        
+
         let progressPublisher: CurrentValueSubject<Progress, NetworkingError>
-        
+
         init(publisher: CurrentValueSubject<Progress, NetworkingError>) {
             self.progressPublisher = publisher
         }
-        
+
         public func urlSession(_ session: URLSession,
                                task: URLSessionTask,
                                didSendBodyData bytesSent: Int64,

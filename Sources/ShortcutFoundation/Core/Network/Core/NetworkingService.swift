@@ -17,15 +17,15 @@ public extension NetworkingClient {
     func get<Payload: Encodable>(_ route: String, params: Payload) -> AnyPublisher<Data, NetworkingError> {
         request(.get, route, params: params).publisher()
     }
-    
+
     func get(_ route: String) -> AnyPublisher<Data, NetworkingError> {
         request(.get, route).publisher()
     }
-    
+
     func get<Payload: Encodable>(_ route: String, params: Payload) -> AnyPublisher<Void, NetworkingError> {
         request(.get, route, params: params).voidPublisher()
     }
-    
+
     func get(_ route: String) -> AnyPublisher<Void, NetworkingError> {
         request(.get, route).voidPublisher()
     }

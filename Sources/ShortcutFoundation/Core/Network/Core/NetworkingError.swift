@@ -157,7 +157,7 @@ public struct NetworkingError: Error, LocalizedError {
     }
 
     public init(error: Error, status: Status? = nil) {
-        
+
         switch error {
         case let error as NetworkingError:
             self.status = error.status
@@ -211,4 +211,3 @@ extension NetworkingError {
     }
 
 }
-
