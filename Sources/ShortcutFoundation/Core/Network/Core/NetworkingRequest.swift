@@ -25,7 +25,7 @@ public class NetworkingRequest<Payload: Encodable> {
     private let logger = NetworkingLogger()
     var timeout: TimeInterval?
     var progressPublisher: CurrentValueSubject<Progress, NetworkingError> { sessionDelegate.progressPublisher }
-    weak var sessionDelegate = SessionDelegate(publisher: CurrentValueSubject<Progress, NetworkingError>(Progress()))
+    var sessionDelegate = SessionDelegate(publisher: CurrentValueSubject<Progress, NetworkingError>(Progress()))
 
     public func publisher() -> AnyPublisher<Data, NetworkingError> {
 
@@ -60,11 +60,11 @@ public class NetworkingRequest<Payload: Encodable> {
         return data
     }
 
-    public func voidPublisher() -> AnyPublisher<Void, NetworkingError> {
+    public func voidPublisher() -> NetworkPublisher<Void> {
         publisher().map { _ in Void() }.eraseToAnyPublisher()
     }
 
-    public func uploadPublisher() -> AnyPublisher<(Data?, Progress), NetworkingError> {
+    public func uploadPublisher() -> NetworkPublisher<(Data?, Progress)> {
         publisher()
             .combineLatest(progressPublisher)
             .map { ($0.0, $0.1) }
@@ -170,7 +170,7 @@ public class NetworkingRequest<Payload: Encodable> {
                 return multipart.buildHttpBodyPart(boundary: boundary)
             }
             .reduce(Data.init(), +)
-            + boundaryEnding
+        + boundaryEnding
     }
 
     func paramsData() -> [String: Any] {

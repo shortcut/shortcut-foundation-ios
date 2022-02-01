@@ -12,8 +12,8 @@ import Combine
 public extension NetworkingClient {
 
     func upload<ResponsePayload: Decodable, Payload: Encodable>(_ route: String,
-                              params: Payload,
-                              multipartData: MultipartData) -> AnyPublisher<(ResponsePayload?, Progress), NetworkingError> {
+                                                                params: Payload,
+                                                                multipartData: MultipartData) -> NetworkPublisher<(ResponsePayload?, Progress)> {
         return post(route, params: params, multipartData: multipartData)
             .tryCompactMap { data, progress in
                 if progress.isCancelled {
@@ -30,7 +30,7 @@ public extension NetworkingClient {
             .eraseToAnyPublisher()
     }
 
-    func upload<ResponsePayload: Decodable>(_ route: String, multipartData: MultipartData) -> AnyPublisher<(ResponsePayload?, Progress), NetworkingError> {
+    func upload<ResponsePayload: Decodable>(_ route: String, multipartData: MultipartData) -> NetworkPublisher<(ResponsePayload?, Progress)> {
         return post(route, multipartData: [multipartData])
             .tryCompactMap { data, progress in
                 if progress.isCancelled {
@@ -48,50 +48,50 @@ public extension NetworkingClient {
     }
 
     func post<Payload: Encodable>(_ route: String,
-              params: Payload,
-              multipartData: MultipartData) -> AnyPublisher<(Data?, Progress), NetworkingError> {
+                                  params: Payload,
+                                  multipartData: MultipartData) -> NetworkPublisher<(Data?, Progress)> {
         return post(route, params: params, multipartData: [multipartData])
     }
 
     func put<Payload: Encodable>(_ route: String,
-             params: Payload? = nil,
-             multipartData: MultipartData) -> AnyPublisher<(Data?, Progress), NetworkingError> {
+                                 params: Payload? = nil,
+                                 multipartData: MultipartData) -> NetworkPublisher<(Data?, Progress)> {
         return put(route, params: params, multipartData: [multipartData])
     }
 
     func patch<Payload: Encodable>(_ route: String,
-               params: Payload? = nil,
-               multipartData: MultipartData) -> AnyPublisher<(Data?, Progress), NetworkingError> {
+                                   params: Payload? = nil,
+                                   multipartData: MultipartData) -> NetworkPublisher<(Data?, Progress)> {
         return patch(route, params: params, multipartData: [multipartData])
     }
 
     // Allow multiple multipart data
     func post<Payload: Encodable>(_ route: String,
-              params: Payload,
-              multipartData: [MultipartData]) -> AnyPublisher<(Data?, Progress), NetworkingError> {
+                                  params: Payload,
+                                  multipartData: [MultipartData]) -> NetworkPublisher<(Data?, Progress)> {
         let req = request(.post, route, params: params)
         req.multipartData = multipartData
         return req.uploadPublisher()
     }
 
     // Allow multiple multipart data
-    func post(_ route: String, multipartData: [MultipartData]) -> AnyPublisher<(Data?, Progress), NetworkingError> {
+    func post(_ route: String, multipartData: [MultipartData]) -> NetworkPublisher<(Data?, Progress)> {
         let req = request(.post, route)
         req.multipartData = multipartData
         return req.uploadPublisher()
     }
 
     func put<Payload: Encodable>(_ route: String,
-             params: Payload? = nil,
-             multipartData: [MultipartData]) -> AnyPublisher<(Data?, Progress), NetworkingError> {
+                                 params: Payload? = nil,
+                                 multipartData: [MultipartData]) -> NetworkPublisher<(Data?, Progress)> {
         let req = request(.put, route, params: params)
         req.multipartData = multipartData
         return req.uploadPublisher()
     }
 
     func patch<Payload: Encodable>(_ route: String,
-               params: Payload? = nil,
-               multipartData: [MultipartData]) -> AnyPublisher<(Data?, Progress), NetworkingError> {
+                                   params: Payload? = nil,
+                                   multipartData: [MultipartData]) -> NetworkPublisher<(Data?, Progress)> {
         let req = request(.patch, route, params: params)
         req.multipartData = multipartData
 
