@@ -161,7 +161,7 @@ public class NetworkingRequest<Payload: Params>: NSObject {
         if httpVerb != .get && multipartData == nil, let params = params {
             switch parameterEncoding {
             case .urlEncoded:
-                request.httpBody =  percentEncodedString().data(using: .utf8)
+                request.httpBody = percentEncodedString().data(using: .utf8)
             case .json:
                 request.httpBody = try? encoder.encode(params)
             }
