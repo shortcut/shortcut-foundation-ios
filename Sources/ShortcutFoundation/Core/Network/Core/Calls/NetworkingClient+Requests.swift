@@ -10,43 +10,6 @@ import Foundation
 import Combine
 
 public extension NetworkingClient {
-
-//    func getRequest<Payload: Params>(_ route: String, params: Payload) -> NetworkingRequest<Payload> {
-//        request(.get, route, params: params)
-//    }
-//
-//    func getRequest(_ route: String) -> NetworkingRequest<String> {
-//        request(.get, route)
-//    }
-//
-//    func postRequest<Payload: Params>(_ route: String, params: Payload) -> NetworkingRequest<Payload> {
-//        request(.post, route, params: params)
-//    }
-//    func postRequest(_ route: String) -> NetworkingRequest<String> {
-//        request(.post, route)
-//    }
-//
-//    func putRequest<Payload: Params>(_ route: String, params: Payload) -> NetworkingRequest<Payload> {
-//        request(.put, route, params: params)
-//    }
-//
-//    func putRequest(_ route: String) -> NetworkingRequest<String> {
-//        request(.put, route)
-//    }
-//
-//    func patchRequest<Payload: Params>(_ route: String, params: Payload) -> NetworkingRequest<Payload> {
-//        request(.patch, route, params: params)
-//    }
-//    func patchRequest(_ route: String) -> NetworkingRequest<String> {
-//        request(.patch, route)
-//    }
-//
-//    func deleteRequest<Payload: Params>(_ route: String, params: Payload) -> NetworkingRequest<Payload> {
-//        request(.delete, route, params: params)
-//    }
-//    func deleteRequest(_ route: String) -> NetworkingRequest<String> {
-//        request(.delete, route)
-//    }
     
     internal func request<Payload: Params>(_ httpVerb: HTTPVerb, _ route: String, params: Payload) -> NetworkingRequest<Payload> {
         let req = NetworkingRequest<Payload>()

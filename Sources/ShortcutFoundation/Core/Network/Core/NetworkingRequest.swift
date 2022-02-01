@@ -190,7 +190,7 @@ public class NetworkingRequest<Payload: Params>: NSObject {
         
         let boundaryEnding = "--\(boundary)--".data(using: .utf8)!
         
-        // Convert multiparts to boundary-seperated Data and combine them
+        // Convert multiparts to boundary-separated Data and combine them
         return allMultiparts
             .map { (multipart: HttpBodyConvertible) -> Data in
                 return multipart.buildHttpBodyPart(boundary: boundary)
@@ -225,7 +225,7 @@ public class NetworkingRequest<Payload: Params>: NSObject {
     }
 }
 
-// Thansks to https://stackoverflow.com/questions/26364914/http-request-in-swift-with-post-method
+// Thanks to https://stackoverflow.com/questions/26364914/http-request-in-swift-with-post-method
 extension CharacterSet {
     static let urlQueryValueAllowed: CharacterSet = {
         let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4

@@ -48,6 +48,7 @@ public extension NetworkingClient {
             .map { _ in Void() }
             .eraseToAnyPublisher()
     }
+    
     func post<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
         return dataRequest(.post, route, params: params)
             .receive(on: DispatchQueue.main)

@@ -46,10 +46,6 @@ public extension NetworkingClient {
         request(.delete, route, params: params).publisher()
     }
 
-//    func post<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
-//        post(route, params: params)
-//    }
-
     func put<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
         request(.put, route, params: params).voidPublisher()
     }
@@ -61,24 +57,4 @@ public extension NetworkingClient {
     func delete<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Void, Error> {
         request(.delete, route, params: params).voidPublisher()
     }
-
-//    func get<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
-//        network.get(route, params: params)
-//    }
-//
-//    func post<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
-//        network.post(route, params: params)
-//    }
-//
-//    func put<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
-//        network.put(route, params: params)
-//    }
-//
-//    func patch<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
-//        network.patch(route, params: params)
-//    }
-//
-//    func delete<Payload: Params>(_ route: String, params: Payload? = nil) -> AnyPublisher<Any, Error> {
-//        network.delete(route, params: params)
-//    }
 }
