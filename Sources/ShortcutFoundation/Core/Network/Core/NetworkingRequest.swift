@@ -18,14 +18,13 @@ public class NetworkingRequest<Payload: Encodable> {
     var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
     var encoder = JSONEncoder()
 
-    public var params: Payload?
+    var params: Payload?
     var headers = [String: String]()
 
     var multipartData: [MultipartData]?
     private let logger = NetworkingLogger()
     var timeout: TimeInterval?
-    var progressPublisher: CurrentValueSubject<Progress, NetworkingError> { sessionDelegate.progressPublisher }
-    var sessionDelegate = SessionDelegate(publisher: CurrentValueSubject<Progress, NetworkingError>(Progress()))
+    var progressPublisher = CurrentValueSubject<Progress, NetworkingError>(Progress())
 
     public func publisher() -> AnyPublisher<Data, NetworkingError> {
 
@@ -37,7 +36,9 @@ public class NetworkingRequest<Payload: Encodable> {
         logger.log(request: urlRequest)
 
         let config = URLSessionConfiguration.default
-        let urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
+        let urlSession = URLSession(configuration: config,
+                                    delegate: SessionDelegate(publisher: progressPublisher),
+                                    delegateQueue: nil)
 
         return urlSession.dataTaskPublisher(for: urlRequest)
             .tryMap { try self.handleResponse(data: $0.data, response: $0.response) }
