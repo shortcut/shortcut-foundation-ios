@@ -1,7 +1,7 @@
 import XCTest
 @testable import ShortcutSwiftUI
 
-final class shortcut_swiftui_iosTests: XCTestCase {
+final class ShortcutSwiftUITests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
