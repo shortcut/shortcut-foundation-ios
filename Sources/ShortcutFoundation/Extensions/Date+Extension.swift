@@ -90,11 +90,11 @@ public extension Date {
 
         return ellapsedTime > days
     }
-    
+
     func isEqual(to date: Date, toGranularity component: Calendar.Component, in calendar: Calendar = .current) -> Bool {
         calendar.isDate(self, equalTo: date, toGranularity: component)
     }
-    
+
     func isInSameMonth() -> Bool { isEqual(to: self, toGranularity: .month) }
     func isInLastMonth() -> Bool {
         guard let nextMonth = Calendar.current.date(byAdding: DateComponents(month: -1), to: Date()) else {
@@ -102,15 +102,15 @@ public extension Date {
         }
         return Calendar.current.isDate(self, equalTo: nextMonth, toGranularity: .month)
     }
-    
+
     func isInCurrentOrLastMonth() -> Bool {
         self.isInSameMonth() || self.isInLastMonth()
     }
-    
+
     func startDateOfMonth() -> Date {
         Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Calendar.current.startOfDay(for: self)))!
     }
-    
+
     func endDateOfMonth() -> Date {
         Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startDateOfMonth())!
     }

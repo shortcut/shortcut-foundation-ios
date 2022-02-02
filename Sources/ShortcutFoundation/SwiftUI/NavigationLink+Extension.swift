@@ -4,12 +4,12 @@
 //
 //  Created by Karl Söderberg on 2022-01-17.
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
-
+//
 
 import SwiftUI
 
 public extension View {
-    
+
     func navigate<Destination: View>(
         isActive: Binding<Bool>,
         destination: Destination?
@@ -23,7 +23,7 @@ public extension View {
             .hidden()
         )
     }
-    
+
     func navigate<Item, Destination: View>(
         item: Binding<Item?>,
         destination: (Item) -> Destination

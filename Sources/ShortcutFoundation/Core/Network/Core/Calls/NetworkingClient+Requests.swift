@@ -11,28 +11,8 @@ import Combine
 
 public extension NetworkingClient {
 
-    func getRequest(_ route: String, params: Params = Params()) -> NetworkingRequest {
-        request(.get, route, params: params)
-    }
-
-    func postRequest(_ route: String, params: Params = Params()) -> NetworkingRequest {
-        request(.post, route, params: params)
-    }
-
-    func putRequest(_ route: String, params: Params = Params()) -> NetworkingRequest {
-        request(.put, route, params: params)
-    }
-
-    func patchRequest(_ route: String, params: Params = Params()) -> NetworkingRequest {
-        request(.patch, route, params: params)
-    }
-
-    func deleteRequest(_ route: String, params: Params = Params()) -> NetworkingRequest {
-        request(.delete, route, params: params)
-    }
-
-    internal func request(_ httpVerb: HTTPVerb, _ route: String, params: Params = Params()) -> NetworkingRequest {
-        let req = NetworkingRequest()
+    internal func request<Payload: Encodable>(_ httpVerb: HTTPVerb, _ route: String, params: Payload) -> NetworkingRequest<Payload> {
+        let req = NetworkingRequest<Payload>()
         req.baseURL = baseURL
         req.cachePolicy = cachePolicy
         req.headers = headers
@@ -40,6 +20,25 @@ public extension NetworkingClient {
         req.route = route
         req.params = params
         req.parameterEncoding = parameterEncoding
+        req.encoder = self.encoder
+
+        if let timeout = timeout {
+            req.timeout = timeout
+        }
+        return req
+    }
+
+    internal func request(_ httpVerb: HTTPVerb, _ route: String) -> NetworkingRequest<String> {
+        let req = NetworkingRequest<String>()
+        req.baseURL = baseURL
+        req.cachePolicy = cachePolicy
+        req.headers = headers
+        req.httpVerb = httpVerb
+        req.route = route
+        req.params = nil
+        req.parameterEncoding = parameterEncoding
+        req.encoder = self.encoder
+
         if let timeout = timeout {
             req.timeout = timeout
         }
