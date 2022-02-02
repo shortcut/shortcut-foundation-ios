@@ -23,9 +23,9 @@ public extension Date {
         return Date()
     }
     
-    static func convertToDate(inputDate: String) -> Date {
+    static func convertToDate(inputDate: String, format: DateFormat = .yearMonthDay) -> Date {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = String.formatString(format: format)
         let formattedDate = formatter.date(from: inputDate)
         return formattedDate ?? Date()
     }

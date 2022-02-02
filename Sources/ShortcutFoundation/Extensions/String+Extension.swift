@@ -73,7 +73,7 @@ public extension String {
     }
     
     // swiftlint:disable cyclomatic_complexity
-    private static func formatString(format: DateFormat) -> String {
+    static func formatString(format: DateFormat) -> String {
         switch format {
         case .time: return "h:mm a"
         case .day: return "dd"
