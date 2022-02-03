@@ -1,10 +1,3 @@
-//
-//  DeviceAuthenticationTests.swift
-//  
-//
-//  Created by Swathi on 2022-02-02.
-//
-
 import XCTest
 import Combine
 
@@ -17,7 +10,7 @@ class DeviceAuthenticationTests: XCTestCase {
 
     private var cancelleables = Set<AnyCancellable>()
 
-    func testNoDeviceBiometrics() {
+    func test_no_device_biometrics() {
         let context = MockDeviceContext()
         let deviceAuth = DeviceAuthentication(context: context,
                                               localizedAlertDesc: "test device biometrics is none")
@@ -25,7 +18,7 @@ class DeviceAuthenticationTests: XCTestCase {
         XCTAssertFalse(deviceAuth.isBiometricsSupported)
     }
 
-    func testFaceIDSupport() {
+    func test_faceID_support() {
         let context = MockDeviceContext(type: .faceID)
         let deviceAuth = DeviceAuthentication(context: context,
                                               localizedAlertDesc: "test faceID biometrics")
@@ -34,7 +27,7 @@ class DeviceAuthenticationTests: XCTestCase {
         XCTAssertTrue(deviceAuth.isBiometricsSupported)
     }
 
-    func testTouchIDSupport() {
+    func test_touchID_support() {
         let context = MockDeviceContext(type: .touchID)
         let deviceAuth = DeviceAuthentication(context: context,
                                       localizedAlertDesc: "test touchID biometrics")
@@ -42,7 +35,7 @@ class DeviceAuthenticationTests: XCTestCase {
         XCTAssertTrue(deviceAuth.isBiometricsSupported)
     }
 
-    func testLoginNoID() {
+    func test_login_no_ID() {
         let context = MockDeviceContext()
         let deviceAuth = DeviceAuthentication(context: context,
                                               localizedAlertDesc: "test biometrics unavailable")
@@ -73,7 +66,7 @@ class DeviceAuthenticationTests: XCTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
-    func testLoginFaceID() {
+    func test_login_faceID() {
         let context = MockDeviceContext(type: .faceID, isAuthenticated: true)
         let deviceAuth = DeviceAuthentication(context: context,
                                               localizedAlertDesc: "loginWithFaceID")
@@ -100,7 +93,7 @@ class DeviceAuthenticationTests: XCTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
     }
     
-    func testLoginFaceIDFailed() {
+    func test_login_faceID_failed() {
         let context = MockDeviceContext(type: .faceID)
         let deviceAuth = DeviceAuthentication(context: context,
                                               localizedAlertDesc: "loginWithFaceID")
@@ -133,7 +126,7 @@ class DeviceAuthenticationTests: XCTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
-    func testLoginTouchID() {
+    func test_login_touchID() {
         let context = MockDeviceContext(type: .touchID, isAuthenticated: true)
         let deviceAuth = DeviceAuthentication(context: context,
                                               localizedAlertDesc: "loginWithTouchID")
@@ -159,7 +152,7 @@ class DeviceAuthenticationTests: XCTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
-    func testRepeatLoginTouchID() {
+    func test_repeat_login_touchID() {
         let context = MockDeviceContext(type: .touchID,
                                         isAuthenticated: true)
         let deviceAuth = DeviceAuthentication(context: context,
@@ -190,7 +183,7 @@ class DeviceAuthenticationTests: XCTestCase {
 
     
 
-    func testSignOut() {
+    func test_logout() {
         let context = MockDeviceContext(type: .touchID, isAuthenticated: true)
         let deviceAuth = DeviceAuthentication(context: context,
                                               localizedAlertDesc: "loginWithTouchID")
@@ -218,10 +211,10 @@ class DeviceAuthenticationTests: XCTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
-    func testSignOutFailed() {
+    func test_logout_failed() {
         let context = MockDeviceContext(type: .touchID, isAuthenticated: true)
         let deviceAuth = DeviceAuthentication(context: context,
-                                              localizedAlertDesc: "loginWithTouchID")
+                                              localizedAlertDesc: "logout")
         XCTAssertEqual(deviceAuth.action, .notAuthenticated)
 
         deviceAuth.$action

@@ -1,10 +1,3 @@
-//
-//  MockDeviceContext.swift
-//  
-//
-//  Created by Swathi on 2022-02-02.
-//
-
 import Foundation
 import LocalAuthentication
 import ShortcutFoundation

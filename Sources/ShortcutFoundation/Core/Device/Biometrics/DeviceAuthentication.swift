@@ -1,8 +1,9 @@
 //
 //  DeviceAuthentication.swift
-//  
+//  ShortcutFoundation
 //
 //  Created by Swathi on 2022-02-02.
+//  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
 import LocalAuthentication
@@ -11,21 +12,21 @@ import LocalAuthentication
 public enum DeviceAuthAction: Equatable {
     case authenticated
     case notAuthenticated
-    case error(BiometricError)
+    case error(DeviceAuthError)
 }
 
 //Error states while authentication
-public enum BiometricError: Swift.Error {
+public enum DeviceAuthError: Error {
     case unsupportedDevice
     case failed
 }
 
 public final class DeviceAuthentication: ObservableObject {
     
-    var alertDescription: String
+    public var alertDescription: String
     private var context: DeviceContextProtocol
     
-    @Published public private(set) var action: DeviceAuthAction
+    @Published private(set) var action: DeviceAuthAction
     {
         didSet {
             if action == .notAuthenticated {
@@ -45,18 +46,18 @@ public final class DeviceAuthentication: ObservableObject {
     }
     
     public init(context: DeviceContextProtocol = LAContext(),
+                policy: LAPolicy = .deviceOwnerAuthentication,
                 localizedAlertDesc: String) {
         self.context = context
         self.alertDescription = localizedAlertDesc
 
-        // Context can set the biometric type
-        context.canEvaluatePolicy(.deviceOwnerAuthentication,
+        context.canEvaluatePolicy(policy,
                                   error: nil)
         action = .notAuthenticated
     }
     
     /// Attempt to authenticate the user with biometrics. Updates action with the result
-    public func login() {
+    public func login(_ policy: LAPolicy = .deviceOwnerAuthentication) {
         var error: NSError?
         // Determine if the device supports biometrics, else return error.
         guard context.canEvaluatePolicy(.deviceOwnerAuthentication,
@@ -70,16 +71,13 @@ public final class DeviceAuthentication: ObservableObject {
             action = .notAuthenticated
         }
 
-        //authenticate user using biometrics or the user's device passcode.
-        //.deviceOwnerAuthenticationWithBiometrics - only faceID/touchId
-        context.evaluatePolicy(.deviceOwnerAuthentication,
+        context.evaluatePolicy(policy,
                                localizedReason: alertDescription) { [weak self] success, _ in
-            // Ensure that the action is updated on main thread
-            DispatchQueue.main.async {
-                self?.action = success ? .authenticated : .error(.failed)
-            }
+            self?.action = success ? .authenticated : .error(.failed)
         }
     }
+    
+    
 
     //Logout if authenticated. Else no state change needed
     public func logout() {

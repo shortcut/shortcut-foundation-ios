@@ -1,8 +1,9 @@
 //
 //  DeviceContextProtocol.swift
-//  
+//  ShortcutFoundation
 //
 //  Created by Swathi on 2022-02-02.
+//  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
 import Foundation
