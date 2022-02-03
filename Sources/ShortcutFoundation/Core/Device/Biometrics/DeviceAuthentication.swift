@@ -60,7 +60,7 @@ public final class DeviceAuthentication: ObservableObject {
     public func login(_ policy: LAPolicy = .deviceOwnerAuthentication) {
         var error: NSError?
         // Determine if the device supports biometrics, else return error.
-        guard context.canEvaluatePolicy(.deviceOwnerAuthentication,
+        guard context.canEvaluatePolicy(policy,
                                         error: &error) else {
             action = .error(.unsupportedDevice)
             return
