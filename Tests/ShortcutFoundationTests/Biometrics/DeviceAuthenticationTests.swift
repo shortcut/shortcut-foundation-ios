@@ -5,7 +5,7 @@ import Combine
 
 class DeviceAuthenticationTests: XCTestCase {
     
-    private let timeout: TimeInterval = 3.0
+    private let timeout: TimeInterval = 5.0
     private let dispatchDelay = 0.5
 
     private var cancelleables = Set<AnyCancellable>()
