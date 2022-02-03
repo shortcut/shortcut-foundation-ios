@@ -5,7 +5,7 @@ import Combine
 
 class DeviceAuthenticationTests: XCTestCase {
     
-    private let timeout: TimeInterval = 3.0
+    private let timeout: TimeInterval = 5.0
     private let dispatchDelay = 0.5
 
     private var cancelleables = Set<AnyCancellable>()
@@ -151,37 +151,6 @@ class DeviceAuthenticationTests: XCTestCase {
 
         waitForExpectations(timeout: timeout, handler: nil)
     }
-
-    func test_repeat_login_touchID() {
-        let context = MockDeviceContext(type: .touchID,
-                                        isAuthenticated: true)
-        let deviceAuth = DeviceAuthentication(context: context,
-                                              localizedAlertDesc: "loginWithTouchID")
-        XCTAssertEqual(deviceAuth.action, .notAuthenticated)
-
-        let expect = expectation(description: "expect")
-        deviceAuth.$action
-            .dropFirst(3)
-            .sink { action in
-                switch action {
-                case .authenticated:
-                    expect.fulfill()
-
-                default:
-                    XCTFail("Unexpected result")
-                }
-            }
-            .store(in: &cancelleables)
-
-        deviceAuth.login()
-        // The response is queued on main and requires a delay to complete
-        DispatchQueue.main.asyncAfter(deadline: .now() + dispatchDelay) {
-            deviceAuth.login()
-        }
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
-    
 
     func test_logout() {
         let context = MockDeviceContext(type: .touchID, isAuthenticated: true)
