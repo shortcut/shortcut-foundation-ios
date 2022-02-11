@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 
+
 public class NetworkingRequest<Payload: Encodable> {
 
     var parameterEncoding = ParameterEncoding.urlEncoded
@@ -25,6 +26,7 @@ public class NetworkingRequest<Payload: Encodable> {
     private let logger = NetworkingLogger()
     var timeout: TimeInterval?
     var progressPublisher = CurrentValueSubject<Progress, NetworkingError>(Progress())
+    var authenticationChallengeHandler: AuthenticationChallengeHandler?
 
     public func publisher() -> AnyPublisher<Data, NetworkingError> {
 
@@ -37,7 +39,7 @@ public class NetworkingRequest<Payload: Encodable> {
 
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config,
-                                    delegate: SessionDelegate(publisher: progressPublisher),
+                                    delegate: SessionDelegate(publisher: progressPublisher, authenticationChallengeHandler: authenticationChallengeHandler),
                                     delegateQueue: nil)
 
         return urlSession.dataTaskPublisher(for: urlRequest)
@@ -216,9 +218,11 @@ extension NetworkingRequest {
     class SessionDelegate: NSObject, URLSessionTaskDelegate {
 
         let progressPublisher: CurrentValueSubject<Progress, NetworkingError>
+        let authenticationChallengeHandler: AuthenticationChallengeHandler?
 
-        init(publisher: CurrentValueSubject<Progress, NetworkingError>) {
+        init(publisher: CurrentValueSubject<Progress, NetworkingError>, authenticationChallengeHandler: AuthenticationChallengeHandler?) {
             self.progressPublisher = publisher
+            self.authenticationChallengeHandler = authenticationChallengeHandler
         }
 
         public func urlSession(_ session: URLSession,
@@ -229,6 +233,12 @@ extension NetworkingRequest {
             let progress = Progress(totalUnitCount: totalBytesExpectedToSend)
             progress.completedUnitCount = totalBytesSent
             progressPublisher.send(progress)
+        }
+        
+        public func urlSession(_ session: URLSession,
+                        didReceive challenge: URLAuthenticationChallenge,
+                        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+            authenticationChallengeHandler?(session, challenge, completionHandler)
         }
     }
 }

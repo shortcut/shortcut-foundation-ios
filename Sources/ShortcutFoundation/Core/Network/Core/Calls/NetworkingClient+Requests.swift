@@ -21,6 +21,7 @@ public extension NetworkingClient {
         req.params = params
         req.parameterEncoding = parameterEncoding
         req.encoder = self.encoder
+        req.authenticationChallengeHandler = authenticationChallengeHandler
 
         if let timeout = timeout {
             req.timeout = timeout
@@ -38,6 +39,7 @@ public extension NetworkingClient {
         req.params = nil
         req.parameterEncoding = parameterEncoding
         req.encoder = self.encoder
+        req.authenticationChallengeHandler = authenticationChallengeHandler
 
         if let timeout = timeout {
             req.timeout = timeout

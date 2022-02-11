@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+public typealias AuthenticationChallengeHandler = (URLSession, URLAuthenticationChallenge, @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) -> Void
+
 public struct NetworkingClient {
     public var defaultCollectionParsingKeyPath: String?
     let baseURL: String
@@ -16,6 +18,7 @@ public struct NetworkingClient {
     public var parameterEncoding = ParameterEncoding.urlEncoded
     public var timeout: TimeInterval?
     public var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
+    public var authenticationChallengeHandler: AuthenticationChallengeHandler?
 
     public var decoder: JSONDecoder =  {
         let decoder = JSONDecoder()
@@ -38,8 +41,9 @@ public struct NetworkingClient {
 
     private let logger = NetworkingLogger()
 
-    public init(baseURL: String, timeout: TimeInterval? = nil) {
+    public init(baseURL: String, timeout: TimeInterval? = nil, authenticationChallengeHandler: @escaping AuthenticationChallengeHandler) {
         self.baseURL = baseURL
         self.timeout = timeout
+        self.authenticationChallengeHandler = authenticationChallengeHandler
     }
 }
