@@ -9,6 +9,7 @@ import PassKit
 import XCTest
 @testable import ShortcutFoundation
 
+#if !os(macOS)
 class PaymentManagerTests: XCTestCase {
     
     func test_delegateDidAuthorizePayment_forwardsMessageToProvider() throws {
@@ -32,3 +33,4 @@ class PaymentManagerTests: XCTestCase {
         PKPaymentAuthorizationController(paymentRequest: .validRequest)
     }
 }
+#endif
