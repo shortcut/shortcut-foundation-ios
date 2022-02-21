@@ -3,7 +3,8 @@
 //  ShortcutFoundation
 //
 //  Created by Swathi on 2022-02-14.
-//  Copyright © 2022 No more yellow notes AB. All rights reserved.
+//  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
+//
 
 import Foundation
 import PassKit
