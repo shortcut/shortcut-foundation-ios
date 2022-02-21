@@ -22,19 +22,18 @@ public enum DeviceAuthError: Error {
 }
 
 public final class DeviceAuthentication: ObservableObject {
-    
+
     public var alertDescription: String
     private var context: DeviceContextProtocol
-    
-    @Published private(set) var action: DeviceAuthAction
-    {
+
+    @Published private(set) var action: DeviceAuthAction {
         didSet {
             if action == .notAuthenticated {
                 context = LAContext()
             }
         }
     }
-    
+
     /// Indicates what type is supported by the  device
     public var type: LABiometryType {
         context.biometryType
@@ -44,7 +43,7 @@ public final class DeviceAuthentication: ObservableObject {
     public var isBiometricsSupported: Bool {
         context.biometryType != .none
     }
-    
+
     public init(context: DeviceContextProtocol = LAContext(),
                 policy: LAPolicy = .deviceOwnerAuthentication,
                 localizedAlertDesc: String) {
@@ -55,7 +54,7 @@ public final class DeviceAuthentication: ObservableObject {
                                   error: nil)
         action = .notAuthenticated
     }
-    
+
     /// Attempt to authenticate the user with biometrics. Updates action with the result
     public func login(_ policy: LAPolicy = .deviceOwnerAuthentication) {
         var error: NSError?
@@ -76,8 +75,6 @@ public final class DeviceAuthentication: ObservableObject {
             self?.action = success ? .authenticated : .error(.failed)
         }
     }
-    
-    
 
     //Logout if authenticated. Else no state change needed
     public func logout() {

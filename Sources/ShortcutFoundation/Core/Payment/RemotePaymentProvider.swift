@@ -14,9 +14,9 @@ public protocol PaymentProvider {
 }
 
 public class RemotePaymentProvider: PaymentProvider {
-    
+
     public init() {}
-    
+
     public func processPayment(_ payment: PKPayment, completion: @escaping (Error?) -> Void) {
         // Implement payment validation with provider - Stripe, Braintree
         completion(nil)

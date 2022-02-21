@@ -22,7 +22,7 @@ public extension Date {
     static var now: Date {
         return Date()
     }
-    
+
     static func convertToDate(inputDate: String, format: DateFormat = .yearMonthDay) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = String.formatString(format: format)
@@ -101,7 +101,7 @@ public extension Date {
     func isEqual(to date: Date, toGranularity component: Calendar.Component, in calendar: Calendar = .current) -> Bool {
         calendar.isDate(self, equalTo: date, toGranularity: component)
     }
-    
+
     func isInCurrentMonth() -> Bool { isEqual(to: Date(), toGranularity: .month) }
     func isInLastMonth() -> Bool {
         guard let previousMonth = Calendar.current.date(byAdding: DateComponents(month: -1), to: Date()) else {
@@ -109,15 +109,15 @@ public extension Date {
         }
         return Calendar.current.isDate(self, equalTo: previousMonth, toGranularity: .month)
     }
-    
+
     func isInCurrentOrLastMonth() -> Bool {
         self.isInCurrentMonth() || self.isInLastMonth()
     }
-    
+
     func startDateOfMonth() -> Date {
         Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Calendar.current.startOfDay(for: self)))!
     }
-    
+
     func endDateOfMonth() -> Date {
         Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startDateOfMonth())!
     }

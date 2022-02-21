@@ -13,7 +13,7 @@ public struct PaymentModel {
     let cost: NSDecimalNumber
     let countryCode: String
     let currency: String
-    
+
     public init(name: String,
                 cost: NSDecimalNumber,
                 countryCode: String,

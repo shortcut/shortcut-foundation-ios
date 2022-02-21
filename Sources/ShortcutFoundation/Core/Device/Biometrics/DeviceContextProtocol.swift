@@ -11,7 +11,7 @@ import LocalAuthentication
 
 public protocol DeviceContextProtocol {
     var biometryType: LABiometryType { get }
-    
+
     @discardableResult
     func canEvaluatePolicy(_ policy: LAPolicy,
                            error: NSErrorPointer) -> Bool
@@ -21,4 +21,3 @@ public protocol DeviceContextProtocol {
 }
 
 extension LAContext: DeviceContextProtocol {}
-
