@@ -9,7 +9,6 @@
 import Foundation
 
 extension Encodable {
-
     func toParams(using encoder: JSONEncoder) throws -> [String: CustomStringConvertible] {
 
         do {
@@ -27,6 +26,12 @@ extension Encodable {
         let data = try encoder.encode(self)
         return try JSONSerialization.jsonObject(with: data, options: [])
     }
+    
+    func toDict(using encoder: JSONEncoder) throws -> [String: Any]? {
+        let data = try encoder.encode(self)
+        guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] else { return nil }
+        return json
+    }
 }
 
 extension Dictionary: HttpBodyConvertible where Key == String, Value == CustomStringConvertible {
@@ -41,3 +46,4 @@ extension Dictionary: HttpBodyConvertible where Key == String, Value == CustomSt
         return httpBody as Data
     }
 }
+
