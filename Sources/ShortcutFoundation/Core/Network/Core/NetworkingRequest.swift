@@ -142,7 +142,7 @@ public class NetworkingRequest<Payload: Encodable> {
             case .json:
                 request.httpBody = try? encoder.encode(params)
             case .formData:
-                if let paramsData = try? params.toDict(using: encoder) {
+                if let paramsData = try? params.toDictionary(using: encoder) {
                     request.httpBody = UrlEncoder.query(parameters: paramsData, isFormData: true).data(using: String.Encoding.utf8, allowLossyConversion: false)
                 }
             }

@@ -27,7 +27,7 @@ extension Encodable {
         return try JSONSerialization.jsonObject(with: data, options: [])
     }
     
-    func toDict(using encoder: JSONEncoder) throws -> [String: Any]? {
+    func toDictionary(using encoder: JSONEncoder) throws -> [String: Any]? {
         let data = try encoder.encode(self)
         guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] else { return nil }
         return json

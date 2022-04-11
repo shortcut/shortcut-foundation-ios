@@ -1,8 +1,9 @@
 //
 //  UrlEncoder.swift
-//  
+//  ShortcutFoundation
 //
 //  Created by Hripsime on 2022-04-07.
+//  Copyright © 2021 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
 import Foundation
