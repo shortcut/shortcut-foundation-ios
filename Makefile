@@ -8,7 +8,7 @@ lint:
 	swiftlint --strict
 
 fix_lint: 
-	swiftlint autocorrect
+	swiftlint --fix --format
 
 doc: 
 	jazzy -c
