@@ -14,7 +14,7 @@ protocol IPaymentManager {
     func checkoutWithApplePay(for paymentModel: PaymentModel)
 }
 
-//#if !os(macOS)
+#if !os(macOS)
 public final class PaymentManager: NSObject, IPaymentManager {
     @OptionalInject private var logger: Loggable?
     let paymentProvider: PaymentProvider
@@ -64,4 +64,4 @@ extension PaymentManager: PKPaymentAuthorizationControllerDelegate {
         }
     }
 }
-//#endif
+#endif
