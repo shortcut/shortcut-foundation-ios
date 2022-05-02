@@ -119,6 +119,10 @@ public class NetworkingRequest<Payload: Encodable> {
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             case .json:
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            case .formData:
+                if request.value(forHTTPHeaderField: "Content-Type") == nil {
+                    request.setValue( "application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                }
             }
         }
 
@@ -137,6 +141,10 @@ public class NetworkingRequest<Payload: Encodable> {
                 request.httpBody = percentEncodedString().data(using: .utf8)
             case .json:
                 request.httpBody = try? encoder.encode(params)
+            case .formData:
+                if let paramsData = try? params.toDictionary(using: encoder) {
+                    request.httpBody = UrlEncoder.query(parameters: paramsData, isFormData: true).data(using: String.Encoding.utf8, allowLossyConversion: false)
+                }
             }
         }
 
@@ -236,4 +244,5 @@ extension NetworkingRequest {
 public enum ParameterEncoding {
     case urlEncoded
     case json
+    case formData
 }
