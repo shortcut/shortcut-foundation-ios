@@ -35,15 +35,15 @@ That's it!
 ### Important!
 When mapping objects in configure(_ injector:), the order of the mapping is important.
 
-If mapping an instance of ViewModel, which refers to an instance of SubviewModel, then ViewModel must be mapped before SubviewModel.
+If mapping an instance of ParentViewModel, which refers to an instance of ChildViewModel, then ParentViewModel must be mapped before ChildViewModel.
 ```
 struct AppConfig: Config {
     func configure(_ injector: Injector) {
-        injector.map(ViewModel.self) {
-            ViewModel()
+        injector.map(ParentViewModel.self) {
+            ParentViewModel()
         }
-        injector.map(SubviewModel.self) {
-            SubviewModel()
+        injector.map(ChildViewModel.self) {
+            ChildViewModel()
         }
     }
 }
