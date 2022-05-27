@@ -71,7 +71,7 @@ var isRunningInPreview: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNIN
 
 ## Variations
 Along with the standard @Inject, there's an additional four variations of the property wrapper, which can be used in its place when needed.
-- `@OptionalInject` is used to inject an optional object,
 - `@InjectObject` is used to inject an @ObservableObject,
+- `@OptionalInject` is used to inject an optional object,
 - `@LazyInject` is used to inject lazily, i.e. the object is only initialized once needed, and
 - `@WeakLazyInject`, which is similar to @LazyInject, with the difference being that since it's a weak reference, it will be automatically disposed of when no longer needed.
