@@ -70,7 +70,7 @@ var isRunningInPreview: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNIN
 ```
 
 ## Variations
-Along with the standard @Inject, there's an additional four variations of the property wrapper, which can be used in its place when needed.
+Along with the standard @Inject, there are four additional variations of the property wrapper, which can be used in its place when needed.
 - `@InjectObject` is used to inject an @ObservableObject,
 - `@OptionalInject` is used to inject an optional object,
 - `@LazyInject` is used to inject lazily, i.e. the object is only initialized once needed, and
