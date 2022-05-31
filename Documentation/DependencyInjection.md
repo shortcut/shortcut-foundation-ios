@@ -35,7 +35,13 @@ That's it!
 ### Important!
 When mapping objects in configure(_ injector:), the order of the mapping is important.
 
-If the class ViewModel will inject the class ApiService, then ApiService must be mapped before ViewModel.
+If for example ViewModel injects ApiService, then ApiService must be mapped before ViewModel.
+```
+class ViewModel {
+    @Inject var apiService: ApiService
+    // ...
+}
+```
 ```
 struct AppConfig: Config {
     func configure(_ injector: Injector) {
