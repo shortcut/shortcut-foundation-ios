@@ -35,20 +35,20 @@ That's it!
 ### Important!
 When mapping objects in configure(_ injector:), the order of the mapping is important.
 
-If mapping an instance of ParentViewModel, which refers to an instance of ChildViewModel, then ParentViewModel must be mapped before ChildViewModel.
+If the class ViewModel will inject the class ApiService, then ApiService must be mapped before ViewModel.
 ```
 struct AppConfig: Config {
     func configure(_ injector: Injector) {
-        injector.map(ParentViewModel.self) {
-            ParentViewModel()
+        injector.map(ApiService.self) {
+            ApiService()
         }
-        injector.map(ChildViewModel.self) {
-            ChildViewModel()
+        injector.map(ViewModel.self) {
+            ViewModel()
         }
     }
 }
 ```
-If not mapped in the correct order, the app may crash.
+Not mapping in this order can cause the app to crash.
 
 ### Mapping Protocols
 In some situations it can be useful to map the type of a protocol instead of a class. By then having several classes conform to the protocol, you can add logic to load the correct instance where appropriate.
