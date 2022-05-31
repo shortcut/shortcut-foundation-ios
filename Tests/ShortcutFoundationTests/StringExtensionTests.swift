@@ -3,10 +3,12 @@ import XCTest
 
 final class StringExtensionTests: XCTestCase {
     func test_age_from_personal_number() {
+        let calendar = Calendar.current
+        let dateOfBirth = calendar.date(from: .init(year: 1985, month: 04, day: 23))!
+        let expectedAge = calendar.dateComponents([.year], from: dateOfBirth, to: .now).year
+
         let sut = "198504230000"
         let age = sut.ageFromPersonalNumber
-        // in 2021
-        let expectedAge = 36
         XCTAssertEqual(age, expectedAge)
     }
     
