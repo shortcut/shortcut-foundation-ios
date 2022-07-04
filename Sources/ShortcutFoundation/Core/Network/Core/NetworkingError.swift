@@ -144,8 +144,13 @@ public struct NetworkingError: Error, LocalizedError {
     }
 
     public var status: Status
+    public var errorCode:Int? {
+        return (self as NSError).code
+    }
     public var code: Int { return status.rawValue }
     public var jsonPayload: Any?
+    public var payloadData: [String: Any]?
+    
     public var underlyingError: Error?
 
     public init(errorCode: Int) {
@@ -162,6 +167,7 @@ public struct NetworkingError: Error, LocalizedError {
         case let error as NetworkingError:
             self.status = error.status
             jsonPayload = error.jsonPayload
+            payloadData = error.payloadData
         case let error as URLError:
             underlyingError = error
             self.status = status ?? Status(rawValue: error.errorCode) ?? .unknown
@@ -181,7 +187,6 @@ public struct NetworkingError: Error, LocalizedError {
     public var errorDescription: String? {
         return "\(self.status)"
     }
-
 }
 
 extension NetworkingError: CustomStringConvertible {

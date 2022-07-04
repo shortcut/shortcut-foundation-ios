@@ -52,6 +52,11 @@ public class NetworkingRequest<Payload: Encodable> {
         if let httpURLResponse = response as? HTTPURLResponse {
             if !(200...299 ~= httpURLResponse.statusCode) {
                 var error = NetworkingError(errorCode: httpURLResponse.statusCode)
+                
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    error.payloadData = json
+                }
+                
                 if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
                     error.jsonPayload = json
                 }

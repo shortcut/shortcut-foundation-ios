@@ -13,7 +13,7 @@ public typealias NetworkPublisher<Response> = AnyPublisher<Response, NetworkingE
 
 public extension NetworkingClient {
 
-    func get<ResponsePayload: Decodable, Payload: Encodable>(_ route: String, params: Payload) -> NetworkPublisher<ResponsePayload> {
+    func get<ResponsePayload: Decodable, Payload: Encodable, errorPeyload: Encodable>(_ route: String, params: Payload, error: errorPeyload) -> NetworkPublisher<ResponsePayload> {
         return dataRequest(.get, route, params: params)
             .decode(type: ResponsePayload.self, decoder: self.decoder)
             .mapError { NetworkingError(error: $0) }
