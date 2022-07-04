@@ -62,7 +62,7 @@ public enum DateFormat {
     case time, day, weekday, month,
          shortMonth, year, dayAndMonth,
          monthAndYear, dayMonthAndYear, weekdayDayMonthYear,
-         weekdayDayMonthTime, dayMonthTime, yearMonthDay
+         weekdayDayMonthTime, dayMonthTime, yearMonthDay, dayMonth, hourAndMinute
 }
 
 public extension String {
@@ -88,6 +88,8 @@ public extension String {
         case .weekdayDayMonthYear: return "EEEE, dd MMM, YYYY"
         case .weekdayDayMonthTime: return "EEEE, dd MMM, h:mm a"
         case .dayMonthTime: return "dd MMM, h:mm a"
+        case .dayMonth: return "dd/MM"
+        case .hourAndMinute: return "HH:mm"
         }
     }
 }
