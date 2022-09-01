@@ -16,6 +16,7 @@ public enum InactivityControl {
 public protocol IEnvironmentConfig {
     func firebasePlist() -> String
     func baseURL() -> String
+    func baseURL(serverVersion: String) -> String
     func verbosity() -> Verbosity
     func forceLogoutOnLaunch() -> Bool
     func forceLogoutOnInactivity() -> InactivityControl
