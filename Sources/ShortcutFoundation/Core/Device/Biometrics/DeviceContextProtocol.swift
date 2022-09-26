@@ -9,6 +9,7 @@
 import Foundation
 import LocalAuthentication
 
+#if !os(watchOS)
 public protocol DeviceContextProtocol {
     var biometryType: LABiometryType { get }
 
@@ -21,3 +22,4 @@ public protocol DeviceContextProtocol {
 }
 
 extension LAContext: DeviceContextProtocol {}
+#endif

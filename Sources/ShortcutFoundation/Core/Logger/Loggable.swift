@@ -97,7 +97,7 @@ struct PrintLogger: Loggable {
 }
 
 import os
-@available(iOS 14.0, *)
+@available(iOS 14.0, watchOS 7.0, *)
 struct AppleLogger: Loggable {
     private let logger: os.Logger
     var verbosity: Verbosity
@@ -130,6 +130,7 @@ struct AppleLogger: Loggable {
     }
 }
 
+@available(watchOS 7.0, *)
 public struct Logger: Loggable {
     private var strategy: Loggable
 
