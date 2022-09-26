@@ -2,6 +2,7 @@ import Foundation
 import LocalAuthentication
 import ShortcutFoundation
 
+#if !os(watchOS)
 public final class MockDeviceContext: DeviceContextProtocol {
     
     private let type: LABiometryType
@@ -31,3 +32,4 @@ public final class MockDeviceContext: DeviceContextProtocol {
         reply(mockEvaluateReply.0, mockEvaluateReply.1)
     }
 }
+#endif

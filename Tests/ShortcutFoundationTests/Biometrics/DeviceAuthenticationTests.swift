@@ -3,6 +3,7 @@ import Combine
 
 @testable import ShortcutFoundation
 
+#if !os(watchOS)
 class DeviceAuthenticationTests: XCTestCase {
     
     private let timeout: TimeInterval = 5.0
@@ -197,3 +198,4 @@ class DeviceAuthenticationTests: XCTestCase {
         XCTAssertEqual(deviceAuth.action, .notAuthenticated)
     }
 }
+#endif
