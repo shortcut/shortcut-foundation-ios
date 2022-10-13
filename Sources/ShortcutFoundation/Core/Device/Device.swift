@@ -13,7 +13,7 @@ public protocol IDevice {
     var isSwishInstalled: Bool { get }
 }
 
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
 import UIKit
 
 public struct Device: IDevice {

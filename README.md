@@ -9,7 +9,9 @@ Contains common utility functions and extensions.
 
 ## Features
 
-- [x] List features here
+[List is not complete]
+
+- [Dependency Injection](Documentation/DependencyInjection.md)
 
 ## Requirements
 

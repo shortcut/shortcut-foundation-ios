@@ -9,9 +9,10 @@
 import Foundation
 import LocalAuthentication
 
+#if !os(watchOS)
 public protocol DeviceContextProtocol {
     var biometryType: LABiometryType { get }
-    
+
     @discardableResult
     func canEvaluatePolicy(_ policy: LAPolicy,
                            error: NSErrorPointer) -> Bool
@@ -21,4 +22,4 @@ public protocol DeviceContextProtocol {
 }
 
 extension LAContext: DeviceContextProtocol {}
-
+#endif
