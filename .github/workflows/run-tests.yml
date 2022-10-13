@@ -1,4 +1,4 @@
-name: Swift
+name: Test SPM Package
 
 on:
   push:
@@ -7,9 +7,10 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  run-tests:
 
     runs-on: self-hosted
+    timeout-minutes: 20
 
     steps:
     - uses: actions/checkout@v3
