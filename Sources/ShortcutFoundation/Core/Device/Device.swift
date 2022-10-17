@@ -16,6 +16,7 @@ public protocol IDevice {
 #if !os(macOS) && !os(watchOS)
 import UIKit
 
+
 public struct Device: IDevice {
     public init() {}
 
