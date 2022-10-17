@@ -15,7 +15,7 @@ Contains common utility functions and extensions.
 
 ## Requirements
 
-- **iOS 12+**
+- **iOS 13+**
 - **Xcode 11+**
 - **Jazzy** ```[sudo] gem install jazzy```
 - **Brew** ```/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"```
