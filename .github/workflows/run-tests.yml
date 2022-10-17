@@ -9,7 +9,7 @@ on:
 jobs:
   run-tests:
 
-    runs-on: self-hosted
+    runs-on: sweden
     timeout-minutes: 20
 
     steps:
