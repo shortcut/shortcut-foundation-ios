@@ -7,7 +7,7 @@ test:
 lint:
 	swiftlint --strict
 
-fix_lint: 
+fix-lint: 
 	swiftlint --fix
 
 doc: 
