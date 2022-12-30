@@ -15,7 +15,7 @@ Contains common utility functions and extensions.
 
 ## Requirements
 
-- **iOS 12+**
+- **iOS 13+**
 - **Xcode 11+**
 - **Jazzy** ```[sudo] gem install jazzy```
 - **Brew** ```/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"```
@@ -38,7 +38,7 @@ Following our style guide should:
 
 ## Installation
 
-####Using as a dependency
+#### Using as a dependency
 
 ``` swift
 // swift-tools-version:5.1
@@ -48,7 +48,7 @@ import PackageDescription
 let package = Package(
   name: "YourTestProject",
   dependencies: [
-    .package(url: "git@github.com:shortcut/shortcut-foundation-ios.git", from: "0.0.7")
+    .package(url: "git@github.com:shortcut/shortcut-foundation-ios.git", from: "1.0.2")
   ],
   targets: [
     .target(name: "YourTestProject", dependencies: ["ShortcutFoundation"])
@@ -57,16 +57,15 @@ let package = Package(
 ```
 And then import wherever needed: ```import ShortcutFoundation ```
 
-#### Adding it to an existent iOS Project via Swift Package Manager
+#### Adding it to an existing iOS Project via Swift Package Manager
 
 1. Using Xcode 11 or greater go to File > Swift Packages > Add Package Dependency
 2. Paste the project URL: `git@github.com:shortcut/shortcut-foundation-ios.git`
 3. Click on next and select the project target
 
-If you have doubts, please, check the following links:
+If you want to know more, please check the following links:
 
 [How to use](https://developer.apple.com/videos/play/wwdc2019/408/)
-
 [Creating Swift Packages](https://developer.apple.com/videos/play/wwdc2019/410/)
 
 After successfully retrieved the package and added it to your project, just import `ShortcutFoundation` and you can get the full benefits of it.
@@ -95,4 +94,4 @@ We have added a few helpers to make your life easier:
 2. ```make test``` to test the project via command line
 3. ```make jazzy``` to generate the documentation and output to the `Docs` folder
 4. ```make lint``` to execute Swiftlint
-5. ```make fixlint``` to auto-correct Swiftlint warnings
+5. ```make fix-lint``` to auto-correct Swiftlint warnings
