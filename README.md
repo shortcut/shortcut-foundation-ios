@@ -66,6 +66,7 @@ And then import wherever needed: ```import ShortcutFoundation ```
 If you want to know more, please check the following links:
 
 [How to use](https://developer.apple.com/videos/play/wwdc2019/408/)
+<br>
 [Creating Swift Packages](https://developer.apple.com/videos/play/wwdc2019/410/)
 
 After successfully retrieved the package and added it to your project, just import `ShortcutFoundation` and you can get the full benefits of it.
