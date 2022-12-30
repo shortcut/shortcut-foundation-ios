@@ -14,7 +14,7 @@ public extension Double {
         formatter.numberStyle = .decimal
         formatter.locale = locale
         formatter.maximumFractionDigits = maximumFractionDigits
-        
+
         return formatter.string(from: self as NSNumber)
     }
 }

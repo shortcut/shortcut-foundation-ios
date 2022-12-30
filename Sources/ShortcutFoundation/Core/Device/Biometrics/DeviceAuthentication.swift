@@ -8,14 +8,14 @@
 
 import LocalAuthentication
 
-//Current state if authentication
+// Current state if authentication
 public enum DeviceAuthAction: Equatable {
     case authenticated
     case notAuthenticated
     case error(DeviceAuthError)
 }
 
-//Error states while authentication
+// Error states while authentication
 public enum DeviceAuthError: Error {
     case unsupportedDevice
     case failed
@@ -77,7 +77,7 @@ public final class DeviceAuthentication: ObservableObject {
         }
     }
 
-    //Logout if authenticated. Else no state change needed
+    // Logout if authenticated. Else no state change needed
     public func logout() {
         if action == .authenticated {
             action = .notAuthenticated

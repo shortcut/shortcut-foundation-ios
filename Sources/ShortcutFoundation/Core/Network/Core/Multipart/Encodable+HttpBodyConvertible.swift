@@ -26,11 +26,11 @@ extension Encodable {
         let data = try encoder.encode(self)
         return try JSONSerialization.jsonObject(with: data, options: [])
     }
-    
+
     func toDictionary(using encoder: JSONEncoder) throws -> [String: Any]? {
         let data = try encoder.encode(self)
-        
-        return try? JSONSerialization.jsonObject(with: data, options: []) as? [String:Any]
+
+        return try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
     }
 }
 
@@ -46,4 +46,3 @@ extension Dictionary: HttpBodyConvertible where Key == String, Value == CustomSt
         return httpBody as Data
     }
 }
-
