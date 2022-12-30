@@ -113,7 +113,7 @@ public extension NetworkingClient {
         request(httpVerb, route).publisher()
     }
 
-    func postData(_ httpVerb: HTTPVerb, _ route: String) ->NetworkPublisher<Data> {
+    func postData(_ httpVerb: HTTPVerb, _ route: String) -> NetworkPublisher<Data> {
         request(.post, route).publisher()
     }
 }

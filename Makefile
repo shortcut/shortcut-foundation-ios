@@ -7,8 +7,8 @@ test:
 lint:
 	swiftlint --strict
 
-fix_lint: 
-	swiftlint --fix --format
+fix-lint: 
+	swiftlint --fix
 
 doc: 
 	jazzy -c
