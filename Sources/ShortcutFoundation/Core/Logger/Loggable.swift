@@ -56,14 +56,14 @@ public protocol Loggable {
     /// - Author: Gabriel Sabadin
     ///
     /// - Parameter message: A String to determine the message you want to be logged
-    func log(message: String)
+    func log(message: @autoclosure @escaping () -> String)
 
     /// Method that triggers the logging procedure
     /// - Author: Gabriel Sabadin
     ///
     /// - Parameter message: A String to determine the message you want to be logged
     /// - Parameter message: A verbosity argument to have the flexibility to use different verbosity
-    func log(message: String, verbosity: Verbosity)
+    func log(message: @autoclosure @escaping () -> String, verbosity: Verbosity)
 }
 
 struct PrintLogger: Loggable {
@@ -73,22 +73,22 @@ struct PrintLogger: Loggable {
         self.verbosity = verbosity
     }
 
-    func log(message: String) {
-        log(message: message, verbosity: verbosity)
+    func log(message: @autoclosure @escaping () -> String) {
+        log(message: message(), verbosity: verbosity)
     }
 
-    func log(message: String, verbosity: Verbosity) {
+    func log(message: @autoclosure @escaping () -> String, verbosity: Verbosity) {
         switch verbosity {
         case .debug:
-            print("🕵️‍♀️ DEBUG: \(message)")
+            print("🕵️‍♀️ DEBUG: \(message())")
         case .info:
-            print("ℹ️ INFO: \(message)")
+            print("ℹ️ INFO: \(message())")
         case .warning:
-            print("⚠️ WARNING: \(message)")
+            print("⚠️ WARNING: \(message())")
         case .error:
-            print("⛔️ ERROR: \(message)")
+            print("⛔️ ERROR: \(message())")
         case .critical:
-            print("☣️ CRITICAL: \(message)")
+            print("☣️ CRITICAL: \(message())")
         case .silent:
             // no log message message
             break
@@ -107,22 +107,22 @@ struct AppleLogger: Loggable {
         logger = os.Logger(subsystem: identifier, category: category)
     }
 
-    func log(message: String) {
-        log(message: message, verbosity: verbosity)
+    func log(message: @autoclosure @escaping () -> String) {
+        log(message: message(), verbosity: verbosity)
     }
 
-    func log(message: String, verbosity: Verbosity) {
+    func log(message: @autoclosure @escaping () -> String, verbosity: Verbosity) {
         switch verbosity {
         case .debug:
-            logger.debug("\(message)")
+            logger.debug("\(message())")
         case .info:
-            logger.info("\(message)")
+            logger.info("\(message())")
         case .warning:
-            logger.warning("\(message)")
+            logger.warning("\(message())")
         case .error:
-            logger.error("\(message)")
+            logger.error("\(message())")
         case .critical:
-            logger.critical("\(message)")
+            logger.critical("\(message())")
         case .silent:
             // no log message message
             break
@@ -150,11 +150,11 @@ public struct Logger: Loggable {
         }
     }
 
-    public func log(message: String) {
-        strategy.log(message: message)
+    public func log(message: @autoclosure @escaping () -> String) {
+        strategy.log(message: message())
     }
 
-    public func log(message: String, verbosity: Verbosity) {
-        strategy.log(message: message, verbosity: verbosity)
+    public func log(message: @autoclosure @escaping () -> String, verbosity: Verbosity) {
+        strategy.log(message: message(), verbosity: verbosity)
     }
 }
