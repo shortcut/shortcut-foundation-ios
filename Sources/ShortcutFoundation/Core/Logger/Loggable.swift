@@ -52,18 +52,31 @@ public protocol Loggable {
     /// - Parameter category: A String to determine the category of the logger
     init(verbosity: Verbosity, identifier: String, category: String)
 
-    /// Method that triggers the logging procedure
+    /// Method that triggers the logging procedure using a string returned from a closure
     /// - Author: Gabriel Sabadin
     ///
     /// - Parameter message: A String to determine the message you want to be logged
     func log(message: @autoclosure @escaping () -> String)
 
-    /// Method that triggers the logging procedure
+    /// Method that triggers the logging procedure using a string returned from a closure
     /// - Author: Gabriel Sabadin
     ///
     /// - Parameter message: A String to determine the message you want to be logged
-    /// - Parameter message: A verbosity argument to have the flexibility to use different verbosity
+    /// - Parameter verbosity: A verbosity argument to have the flexibility to use different verbosity
     func log(message: @autoclosure @escaping () -> String, verbosity: Verbosity)
+    
+    /// Method that triggers the logging procedure using fixed text.
+    /// - Author: Gabriel Sabadin
+    ///
+    /// - Parameter message: A String to determine the message you want to be logged
+    /// - Parameter verbosity: A verbosity argument to have the flexibility to use different verbosity
+    func logText(message: String, verbosity: Verbosity)
+    
+    /// Method that triggers the logging procedure using fixed text.
+    /// - Author: Gabriel Sabadin
+    ///
+    /// - Parameter message: A String to determine the message you want to be logged
+    func logText(message: String)
 }
 
 struct PrintLogger: Loggable {
@@ -93,6 +106,14 @@ struct PrintLogger: Loggable {
             // no log message message
             break
         }
+    }
+    
+    func logText(message: String) {
+        log(message: message)
+    }
+    
+    func logText(message: String, verbosity: Verbosity) {
+        log(message: message, verbosity: verbosity)
     }
 }
 
@@ -128,6 +149,14 @@ struct AppleLogger: Loggable {
             break
         }
     }
+    
+    func logText(message: String) {
+        log(message: message)
+    }
+    
+    func logText(message: String, verbosity: Verbosity) {
+        log(message: message, verbosity: verbosity)
+    }
 }
 
 @available(watchOS 7.0, *)
@@ -156,5 +185,13 @@ public struct Logger: Loggable {
 
     public func log(message: @autoclosure @escaping () -> String, verbosity: Verbosity) {
         strategy.log(message: message(), verbosity: verbosity)
+    }
+    
+    public func logText(message: String) {
+        log(message: message)
+    }
+    
+    public func logText(message: String, verbosity: Verbosity) {
+        log(message: message, verbosity: verbosity)
     }
 }
