@@ -115,6 +115,7 @@ public struct NetworkingError: Error, LocalizedError {
         case cannotDecodeRawData            = -1015
         case cannotDecodeContentData        = -1016
         case cannotParseResponse            = -1017
+        case dataNotAllowed                 = -1020
         case atsRequiresSecureConnection    = -1022
         case fileDoesNotExist               = -1100
         case fileIsDirectory                = -1101
@@ -162,6 +163,7 @@ public struct NetworkingError: Error, LocalizedError {
         case let error as NetworkingError:
             self.status = error.status
             jsonPayload = error.jsonPayload
+            self.underlyingError = error.underlyingError
         case let error as URLError:
             underlyingError = error
             self.status = status ?? Status(rawValue: error.errorCode) ?? .unknown
