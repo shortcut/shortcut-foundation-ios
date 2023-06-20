@@ -22,7 +22,7 @@ public enum DeviceAuthError: Error {
     case failed
 }
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
 public final class DeviceAuthentication: ObservableObject {
 
     public var alertDescription: String

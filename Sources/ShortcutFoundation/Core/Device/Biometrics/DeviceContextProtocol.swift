@@ -10,7 +10,7 @@
 import Foundation
 import LocalAuthentication
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
 public protocol DeviceContextProtocol {
     var biometryType: LABiometryType { get }
 
