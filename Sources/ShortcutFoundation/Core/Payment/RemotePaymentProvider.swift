@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(PassKit)
 import Foundation
 import PassKit
 
@@ -22,3 +23,5 @@ public class RemotePaymentProvider: PaymentProvider {
         completion(nil)
     }
 }
+
+#endif

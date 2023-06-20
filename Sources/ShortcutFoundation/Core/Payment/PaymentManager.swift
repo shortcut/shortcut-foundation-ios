@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(PassKit)
 import Foundation
 import PassKit
 
@@ -64,4 +65,6 @@ extension PaymentManager: PKPaymentAuthorizationControllerDelegate {
         }
     }
 }
+#endif
+
 #endif

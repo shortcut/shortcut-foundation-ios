@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(LocalAuthentication)
 import Foundation
 import LocalAuthentication
 
@@ -22,4 +23,5 @@ public protocol DeviceContextProtocol {
 }
 
 extension LAContext: DeviceContextProtocol {}
+#endif
 #endif

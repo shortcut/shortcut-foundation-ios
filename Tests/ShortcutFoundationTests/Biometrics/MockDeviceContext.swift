@@ -1,3 +1,4 @@
+#if canImport(LocalAuthentication)
 import Foundation
 import LocalAuthentication
 import ShortcutFoundation
@@ -32,4 +33,5 @@ public final class MockDeviceContext: DeviceContextProtocol {
         reply(mockEvaluateReply.0, mockEvaluateReply.1)
     }
 }
+#endif
 #endif

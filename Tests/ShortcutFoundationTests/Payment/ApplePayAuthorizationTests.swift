@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(PassKit)
 import PassKit
 import XCTest
 import ShortcutFoundation
@@ -80,3 +81,4 @@ class ApplePayAuthorizationTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 }
+#endif

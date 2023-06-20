@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(LocalAuthentication)
 import LocalAuthentication
 
 // Current state if authentication
@@ -84,4 +85,5 @@ public final class DeviceAuthentication: ObservableObject {
         }
     }
 }
+#endif
 #endif

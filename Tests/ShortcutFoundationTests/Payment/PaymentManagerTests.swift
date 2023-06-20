@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(PassKit)
 import PassKit
 import XCTest
 @testable import ShortcutFoundation
@@ -34,4 +35,6 @@ class PaymentManagerTests: XCTestCase {
         PKPaymentAuthorizationController(paymentRequest: .validRequest)
     }
 }
+#endif
+
 #endif
