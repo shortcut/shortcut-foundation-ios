@@ -2,6 +2,7 @@ import Foundation
 
 extension Date {
     static var nineteenthAugust2021: Date {
-        return Date(timeIntervalSince1970: TimeInterval(1629346343143/1000))
+        let time: UInt64 = 1629346343143
+        return Date(timeIntervalSince1970: TimeInterval(time/1000))
     }
 }
