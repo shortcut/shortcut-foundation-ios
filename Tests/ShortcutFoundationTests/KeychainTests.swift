@@ -22,7 +22,7 @@ final class KeychainTests: XCTestCase {
     }
     
     func test_saving_reading_and_deleting_codable() {
-        let expectedValue = KeychainTestData(name: "Gabriel", createdAt: .now)
+        let expectedValue = KeychainTestData(name: "Gabriel", createdAt: Date())
         codableSUT = expectedValue
         
         XCTAssertNotNil(codableSUT)
