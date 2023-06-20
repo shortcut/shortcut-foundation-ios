@@ -45,6 +45,12 @@ public final class PaymentManager: NSObject, IPaymentManager {
 }
 
 extension PaymentManager: PKPaymentAuthorizationControllerDelegate {
+    #if !os(watchOS) && !os(tvOS)
+    // Needed for iOS 14, macOS, and Catalyst
+    public func presentationWindow(for controller: PKPaymentAuthorizationController) -> UIWindow? {
+        nil
+    }
+    #endif
 
     public func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
         paymentController?.dismiss(completion: nil)
