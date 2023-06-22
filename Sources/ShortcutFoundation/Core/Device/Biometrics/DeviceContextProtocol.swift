@@ -6,10 +6,11 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(LocalAuthentication)
 import Foundation
 import LocalAuthentication
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
 public protocol DeviceContextProtocol {
     var biometryType: LABiometryType { get }
 
@@ -22,4 +23,5 @@ public protocol DeviceContextProtocol {
 }
 
 extension LAContext: DeviceContextProtocol {}
+#endif
 #endif

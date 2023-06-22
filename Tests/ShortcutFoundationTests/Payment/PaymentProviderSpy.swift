@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(PassKit)
 import PassKit
 import ShortcutFoundation
 
@@ -16,3 +17,4 @@ class PaymentProviderSpy: PaymentProvider {
         payments.append(payment)
     }
 }
+#endif

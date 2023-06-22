@@ -3,7 +3,7 @@ import Combine
 
 @testable import ShortcutFoundation
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
 class DeviceAuthenticationTests: XCTestCase {
     
     private let timeout: TimeInterval = 5.0

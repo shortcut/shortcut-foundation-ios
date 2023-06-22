@@ -5,7 +5,7 @@ final class StringExtensionTests: XCTestCase {
     func test_age_from_personal_number() {
         let calendar = Calendar.current
         let dateOfBirth = calendar.date(from: .init(year: 1985, month: 04, day: 23))!
-        let expectedAge = calendar.dateComponents([.year], from: dateOfBirth, to: .now).year
+        let expectedAge = calendar.dateComponents([.year], from: dateOfBirth, to: Date()).year
 
         let sut = "198504230000"
         let age = sut.ageFromPersonalNumber
@@ -14,7 +14,7 @@ final class StringExtensionTests: XCTestCase {
     
     func test_negative_futute_age_from_personal_number() {
         let dateOfBirth = Calendar.current.date(from: .init(year: 1985, month: 12, day: 23))!
-        let expectedAge = Calendar.current.dateComponents([.year], from: dateOfBirth, to: .now).year
+        let expectedAge = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date()).year
         let sut = "198512230000"
         let age = sut.ageFromPersonalNumber
         XCTAssertEqual(age, expectedAge)

@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(PassKit)
 import PassKit
 
 public final class ApplePayAuthorizationHandler {
@@ -80,3 +81,4 @@ public final class ApplePayAuthorizationHandler {
         completion(.success(paymentVC))
     }
 }
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(PassKit)
 import PassKit
 import ShortcutFoundation
 
@@ -70,3 +71,4 @@ extension PaymentModel {
                             currency: TestStrings.invalidCurrency.rawValue)
     }
 }
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2022 Shortcut Scandinavia Apps AB. All rights reserved.
 //
 
+#if canImport(LocalAuthentication)
 import LocalAuthentication
 
 // Current state if authentication
@@ -21,7 +22,7 @@ public enum DeviceAuthError: Error {
     case failed
 }
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
 public final class DeviceAuthentication: ObservableObject {
 
     public var alertDescription: String
@@ -84,4 +85,5 @@ public final class DeviceAuthentication: ObservableObject {
         }
     }
 }
+#endif
 #endif
