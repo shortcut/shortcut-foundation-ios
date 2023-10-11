@@ -19,10 +19,6 @@ public extension Date {
     var isFutureDay: Bool { isFuture && !isToday }
     var isPastDay: Bool { isPast && !isToday }
 
-    static var now: Date {
-        return Date()
-    }
-
     static func convertToDate(inputDate: String, format: DateFormat = .yearMonthDay) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = String.formatString(format: format)
