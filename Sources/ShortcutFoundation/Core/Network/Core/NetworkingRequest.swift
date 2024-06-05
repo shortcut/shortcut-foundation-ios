@@ -26,6 +26,26 @@ public class NetworkingRequest<Payload: Encodable> {
     var timeout: TimeInterval?
     var progressPublisher = CurrentValueSubject<Progress, NetworkingError>(Progress())
 
+    public func run() async throws -> Data {
+        guard let urlRequest = buildURLRequest() else {
+            throw NetworkingError.unableToParseRequest
+        }
+
+        logger.log(request: urlRequest)
+
+        let config = URLSessionConfiguration.default
+        let urlSession = URLSession(configuration: config,
+                                    delegate: SessionDelegate(publisher: progressPublisher),
+                                    delegateQueue: nil)
+
+        do {
+            let (data, urlResponse) = try await urlSession.data(for: urlRequest)
+            return try handleResponse(data: data, response: urlResponse)
+        } catch {
+            throw NetworkingError(error: error)
+        }
+    }
+
     public func publisher() -> AnyPublisher<Data, NetworkingError> {
 
         guard let urlRequest = buildURLRequest() else {
