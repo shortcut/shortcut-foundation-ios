@@ -98,29 +98,46 @@ public class NetworkingRequest<Payload: Encodable> {
             return urlString
         }
 
-        guard let params = params else {
+        guard let params = params, var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return urlString
         }
 
-        let mirror = Mirror(reflecting: params)
+        var queryItems = urlComponents.queryItems ?? [URLQueryItem]()
 
-        if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
-            var queryItems = urlComponents.queryItems ?? [URLQueryItem]()
-            mirror.children.forEach { param in
-                if let key = param.label {
-                    // arrayParam[] syntax
-                    if let array = param.value as? [CustomStringConvertible] {
-                        array.forEach {
-                            queryItems.append(URLQueryItem(name: "\(key)[]", value: "\($0)"))
-                        }
+        /// Preferably try to encode the payload before parsing it to a Mirror since `Mirror(reflecting:)`
+        /// will not respect custom encoding in the payload
+        if let dic = try? params.toDictionary(using: encoder) {
+            dic.forEach { param in
+                if let array = param.value as? [CustomStringConvertible] {
+                    array.forEach {
+                        queryItems.append(URLQueryItem(name: "\(param.key)[]", value: "\($0)"))
                     }
-                    queryItems.append(URLQueryItem(name: key, value: "\(param.value)"))
+                }
+                if let value = (param.value as? CustomStringConvertible)?.description {
+                    queryItems.append(URLQueryItem(name: param.key, value: value))
                 }
             }
-            urlComponents.queryItems = queryItems
-            return urlComponents.url?.absoluteString ?? urlString
+
+        } else { /// ...but if it fails then use regular reflection
+            Mirror(reflecting: params)
+                .children
+                .forEach { param in
+                    if let key = param.label {
+                        // arrayParam[] syntax
+                        if let array = param.value as? [CustomStringConvertible] {
+                            array.forEach {
+                                queryItems.append(URLQueryItem(name: "\(key)[]", value: "\($0)"))
+                            }
+                        }
+                        if let value = (param.value as? CustomStringConvertible)?.description {
+                            queryItems.append(URLQueryItem(name: key, value: value))
+                        }
+                    }
+                }
         }
-        return urlString
+        
+        urlComponents.queryItems = queryItems
+        return urlComponents.url?.absoluteString ?? urlString
     }
 
     internal func buildURLRequest() -> URLRequest? {
