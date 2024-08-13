@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.8
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "ShortcutFoundation",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v11),
+        .iOS(.v16),
+        .macOS(.v12),
         .tvOS(.v14),
         .watchOS(.v6)
     ],

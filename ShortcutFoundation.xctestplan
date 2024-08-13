@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "EBA17688-D700-4501-8039-362F1CB230C9",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "en",
+    "locationScenario" : {
+      "identifier" : "New York, NY, USA",
+      "referenceType" : "built-in"
+    },
+    "region" : "US"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ShortcutFoundationTests",
+        "name" : "ShortcutFoundationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
