@@ -15,8 +15,8 @@ Contains common utility functions and extensions.
 
 ## Requirements
 
-- **iOS 13+**
-- **Xcode 11+**
+- **iOS 16+**
+- **Xcode 12+**
 - **Jazzy** ```[sudo] gem install jazzy```
 - **Brew** ```/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"```
 - **Make** ```brew install make```
@@ -59,7 +59,7 @@ And then import wherever needed: ```import ShortcutFoundation ```
 
 #### Adding it to an existing iOS Project via Swift Package Manager
 
-1. Using Xcode 11 or greater go to File > Swift Packages > Add Package Dependency
+1. Using Xcode 12 or greater go to File > Swift Packages > Add Package Dependency
 2. Paste the project URL: `git@github.com:shortcut/shortcut-foundation-ios.git`
 3. Click on next and select the project target
 
